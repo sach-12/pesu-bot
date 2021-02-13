@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# CSV files
+*.csv
+
+# Nohup.out
+nohup.out
