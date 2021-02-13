@@ -47,6 +47,8 @@ class verification(commands.Cog):
         self.just_joined = get(self.guildObj.roles, id=798765678739062804)
         self.verified = get(self.guildObj.roles, id=749683320941445250)
         self.senior = get(self.guildObj.roles, id=802008729191972905)
+        self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\nReturns the information about a verified user on this server'
+        self.deverify = '`!d` or `!deverify`\n!d {Member mention}\nDeverifies and removes the data of the user from the verified list'
 
 
     def getuser(self, a=""):
@@ -218,6 +220,32 @@ class verification(commands.Cog):
             
             except:
                 await ctx.channel.send(f"{ctx.author.mention} enter a valid member")
+        else:
+            await ctx.channel.send("You are not authorised to do that")
+
+
+    @commands.command(aliases=['d', 'deverify'])
+    async def _deverify(self, ctx, member=""):
+        deverify_embed = discord.Embed(title="Deverify", color=0x48BF91, description=self.deverify)
+
+        if(member == ""):
+            await ctx.channel.send("Mention a member as argument", embed=deverify_embed)
+            return
+        
+        user = ""
+        try:
+            user = await commands.MemberConverter().convert(ctx, member)
+        except:
+            await ctx.channel.send("Mention a valid member", embed=deverify_embed)
+            return
+
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
+            if(verification.getDeverified(str(user.id))):
+                for role in ctx.author.roles[1:]:
+                    await user.remove_roles(role)
+                await ctx.channel.send(f"De-verified {user.mention}")
+            else:
+                await ctx.channel.send(f"{ctx.author.mention}, the user has not been verified")
         else:
             await ctx.channel.send("You are not authorised to do that")
 
