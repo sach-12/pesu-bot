@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from time import sleep
 from discord.utils import get
-from verification import verification
+# from verification import verification
 
 GUILD_ID = 742797665301168220
 BOT_LOGS = 786084620944146504
@@ -64,7 +64,7 @@ class server(commands.Cog):
     async def on_member_remove(self, user):
         await self.client.get_channel(BOT_LOGS).send(f"{str(user)} just left.")
         await self.client.get_channel(BOT_LOGS).send(f"i.e., {str(user.mention)} just left")
-        if(verification.getDeverified(str(user.id))):
+        if(server.getDeverified(str(user.id))):
             await self.client.get_channel(BOT_LOGS).send("Deverified the user")
 
 
@@ -135,6 +135,26 @@ class server(commands.Cog):
     async def _ping(self, ctx):
         ps = f"Pong!!!\nPing = `{str(round(self.client.latency * 1000))} ms`"
         await ctx.channel.send(ps)
+
+
+    def getDeverified(self, a=""):
+        dat = ""
+        ret = False
+        file1 = open('verified.csv', 'r')
+
+        for line in file1:
+            if(a not in line.split(',')):
+                dat += line
+            else:
+                ret = True
+
+        file1.close()
+        
+        file1 = open('verified.csv', 'w')
+        file1.write(dat)
+        file1.close()
+
+        return ret
 
 
 def setup(client):
