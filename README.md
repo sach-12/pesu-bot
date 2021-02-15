@@ -31,4 +31,3 @@ If you wish to contribute to the bot, run these steps:
 3. Wait for approval for reviewers. Your PR may be directly accepted or requested for further changes.
 
 **Under no circumstances is anyone allowed to merge to the main branch.**
-**This is a test commit**

@@ -265,7 +265,7 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
-    @bot.command(aliases = ['contribute', 'support'])
+    @commands.command(aliases = ['contribute', 'support'])
     async def _support(self, ctx, *params):
         Embeds = discord.Embed(title="Contributions", color=0x00ff00)
         Embeds.add_field(name="Github repo", value="https://github.com/sach-12/pesu-bot",inline = False)
@@ -285,7 +285,7 @@ class misc(commands.Cog):
         
         stark = ctx.guild.get_member(718845827413442692).mention
         flabby = ctx.guild.get_member(467341580051939339).mention
-        e11i0t = ctx.guild.get_member(718845827413442692).mention
+        e11i0t = ctx.guild.get_member(621283810926919680).mention
         sach = ctx.guild.get_member(723377619420184668).mention
         Embeds.add_field(name = "Reviewers", value = "`ArvindAROO` - {}\n `Flab-E` - {}\n `Mre11i0t` - {} and\n `sach-12` - {}".format(stark, flabby, e11i0t,sach), inline = False)
         Embeds.add_field(name = "Important", value = "**Under no circumstances is anyone allowed to merge to the main branch.**",inline = False)
