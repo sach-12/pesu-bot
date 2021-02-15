@@ -15,14 +15,15 @@ The source code for authentication and moderation bot used in "PESU 2019 Batch" 
 
 Download the required modules by using the following command:
 
-```pip3 install -r requirements.txt```
+`pip3 install -r requirements.txt`
 
 You can either fork this repo or clone it.
 To clone this repo using git CLI, run the following command:
 
-```git clone https://github.com/sach-12/pesu-bot/```
+`git clone https://github.com/sach-12/pesu-bot/`
 
 If you wish to contribute to the bot, run these steps:
+
 1. Create a new branch called `beta-(discord-username)`
 
 2. Do whatever changes you wish to do and create a pull request with the following information furnished in the request message: "The cog you wish to change | What did you change"
