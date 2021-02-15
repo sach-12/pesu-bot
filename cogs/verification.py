@@ -35,6 +35,8 @@ class verification(commands.Cog):
             'Campus',
             'verified',
         ]
+        self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\n\nReturns the information about a verified user on this server'
+        self.deverify = '`!d` or `!deverify`\n!d {Member mention}\n\nDeverifies and removes the data of the user from the verified list'
 
 
     @commands.Cog.listener()
@@ -47,14 +49,12 @@ class verification(commands.Cog):
         self.just_joined = get(self.guildObj.roles, id=798765678739062804)
         self.verified = get(self.guildObj.roles, id=749683320941445250)
         self.senior = get(self.guildObj.roles, id=802008729191972905)
-        self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\nReturns the information about a verified user on this server'
-        self.deverify = '`!d` or `!deverify`\n!d {Member mention}\nDeverifies and removes the data of the user from the verified list'
 
 
     def getuser(self, a=""):
         if(a == ""):
             return['error']
-        f = open('verified.csv', 'r')
+        f = open('cogs/verified.csv', 'r')
         srn_list = [line.split(',')[3] for line in list(filter(None, f.read().split('\n')))]
         if(a in srn_list):
             f.close()
@@ -62,9 +62,9 @@ class verification(commands.Cog):
         f.close()
 
         if('PES12018' in a):
-            file = open('batch_2018.csv', 'r')
+            file = open('cogs/batch_2018.csv', 'r')
         else:
-            file = open('batch_list.csv', 'r')
+            file = open('cogs/batch_list.csv', 'r')
 
         for lin in file:
             if(a in lin):
@@ -78,7 +78,7 @@ class verification(commands.Cog):
     def getDeverified(self, a=""):
         dat = ""
         ret = False
-        file1 = open('verified.csv', 'r')
+        file1 = open('cogs/verified.csv', 'r')
 
         for line in file1:
             if(a not in line.split(',')):
@@ -88,7 +88,7 @@ class verification(commands.Cog):
 
         file1.close()
         
-        file1 = open('verified.csv', 'w')
+        file1 = open('cogs/verified.csv', 'w')
         file1.write(dat)
         file1.close()
 
@@ -98,7 +98,7 @@ class verification(commands.Cog):
     def getVerified(self, a=""):
         if(a == ""):
             return ['unverified']
-        file = open('verified.csv', 'r')
+        file = open('cogs/verified.csv', 'r')
 
         for line in file:
             line = line.split(',')
@@ -136,7 +136,7 @@ class verification(commands.Cog):
             return
 
         # getting credentials from the batch list
-        dat = verification.getuser(SRN)
+        dat = self.getuser(SRN)
 
         # if the SRN is already in the verified.csv file
         if("Done" in dat):
@@ -192,7 +192,7 @@ class verification(commands.Cog):
             sleep(6)
 
             # update verified.csv
-            with open('verified.csv', 'a') as file:
+            with open('cogs/verified.csv', 'a') as file:
                 file.write(f"{user.display_name}, {user.id}," + ','.join(dat).replace('\n', '') + ',verified\n')
             
             # add the verified and remove the just joined roles
@@ -209,7 +209,7 @@ class verification(commands.Cog):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             try:
                 user = await commands.MemberConverter().convert(ctx, member)
-                data = verification.getVerified(str(user.id))
+                data = self.getVerified(str(user.id))
                 if('unverified' in data):
                     await ctx.channel.send(f"{ctx.author.mention} The user has not been verified yet")
                     return
@@ -240,7 +240,7 @@ class verification(commands.Cog):
             return
 
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
-            if(verification.getDeverified(str(user.id))):
+            if(self.getDeverified(str(user.id))):
                 for role in ctx.author.roles[1:]:
                     await user.remove_roles(role)
                 await ctx.channel.send(f"De-verified {user.mention}")
@@ -254,7 +254,7 @@ class verification(commands.Cog):
     async def _file(self, ctx):
         if((self.admin in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             await ctx.channel.send("You have the necessary role")
-            with open('verified.csv', 'r') as fp:
+            with open('cogs/verified.csv', 'r') as fp:
                 await self.client.get_channel(BOT_TEST).send(file=discord.File(fp, 'verified.csv'))
             fp.close()
         else:

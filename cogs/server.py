@@ -14,18 +14,18 @@ class server(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.veri = '`!v` or `!verify`\n!v help\n!v {SRN}'
-        self.count = '`!c` or `!count`\n!c {Role name(don\'t mention it, type it out)}\nReturns the number of people with the speified role'
-        self.ping = '`!ping` or `!Ping`\nReturns the bot\'s latency'
-        self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\nReturns the information about a verified user on this server'
-        self.deverify = '`!d` or `!deverify`\n!d {Member mention}\nDeverifies and removes the data of the user from the verified list'
-        self.fil = '`!f` or `!file`\nSends the verified.csv file to #bot-test'
-        self.purge = '`!p` or `!purge`\n!p {amount}\nPurges the specified number of messages(limit=1000)'
-        self.echo = '`!e` or `!echo`\n!e {Channel mention} {Text}\n Echoes a message through the bot to the specified channel'
-        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\nMutes the user for the specified time'
-        self.unmute = '`!unmute`\n!unmute {Member mention}\nUnmutes the user'
-        self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\nLocks the specified channel'
-        self.unlock = '`!unlock`\n!unlock {Channel mention}\nUnlocks the specified channel'
-        self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\nKicks the member from the server'
+        self.count = '`!c` or `!count`\n!c {Role name(don\'t mention it, type it out)}\n\nReturns the number of people with the speified role'
+        self.ping = '`!ping` or `!Ping`\n\nReturns the bot\'s latency'
+        self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\n\nReturns the information about a verified user on this server'
+        self.deverify = '`!d` or `!deverify`\n!d {Member mention}\n\nDeverifies and removes the data of the user from the verified list'
+        self.fil = '`!f` or `!file`\n\nSends the verified.csv file to #bot-test'
+        self.purge = '`!p` or `!purge`\n!p {amount}\n\nPurges the specified number of messages(limit=1000)'
+        self.echo = '`!e` or `!echo`\n!e {Channel mention} {Text}\n\nEchoes a message through the bot to the specified channel'
+        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\n\nMutes the user for the specified time'
+        self.unmute = '`!unmute`\n!unmute {Member mention}\n\nUnmutes the user'
+        self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\n\nLocks the specified channel'
+        self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
+        self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
 
 
     @commands.Cog.listener()
@@ -70,8 +70,6 @@ class server(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        await self.client.process_commands(message)
-
         if(message.author.bot):
             pass
         else:

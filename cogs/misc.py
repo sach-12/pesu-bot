@@ -12,6 +12,13 @@ class misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.purge = '`!p` or `!purge`\n!p {amount}\n\nPurges the specified number of messages(limit=1000)'
+        self.echo = '`!e` or `!echo`\n!e {Channel mention} {Text}\n\nEchoes a message through the bot to the specified channel'
+        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\n\nMutes the user for the specified time'
+        self.unmute = '`!unmute`\n!unmute {Member mention}\n\nUnmutes the user'
+        self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\n\nLocks the specified channel'
+        self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
+        self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
 
 
     @commands.Cog.listener()
@@ -23,13 +30,6 @@ class misc(commands.Cog):
         self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
         self.bots = get(self.guildObj.roles, id=746226955094851657)
         self.muted = get(self.guildObj.roles, id=775981947079491614)
-        self.purge = '`!p` or `!purge`\n!p {amount}\nPurges the specified number of messages(limit=1000)'
-        self.echo = '`!e` or `!echo`\n!e {Channel mention} {Text}\n Echoes a message through the bot to the specified channel'
-        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\nMutes the user for the specified time'
-        self.unmute = '`!unmute`\n!unmute {Member mention}\nUnmutes the user'
-        self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\nLocks the specified channel'
-        self.unlock = '`!unlock`\n!unlock {Channel mention}\nUnlocks the specified channel'
-        self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\nKicks the member from the server'
 
 
     @commands.command(aliases=['c', 'count'])
