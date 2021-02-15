@@ -7,7 +7,7 @@ load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = commands.Bot(command_prefix='!', help_command=None, intents=discord.Intents().all())
-
+BOT_LOGS = 786084620944146504
 
 @client.command(aliases = ['loadit'])
 async def load(ctx, extension):
@@ -17,7 +17,7 @@ async def load(ctx, extension):
             client.load_extension(f"cogs.{extension}")
             success = f"cogs.{extension} was loaded succesfully"
             await ctx.channel.send(success)
-            await client.get_channel(786084620944146504).send(success)
+            await client.get_channel(BOT_LOGS).send(success)
         except Exception as e:
             await ctx.channel.send(e)
     else:
@@ -32,7 +32,7 @@ async def unload(ctx, extension):
             client.unload_extension(f"cogs.{extension}")
             success = f"cogs.{extension} was unloaded succesfully"
             await ctx.channel.send(success)
-            await client.get_channel(786084620944146504).send(success)
+            await client.get_channel(BOT_LOGS).send(success)
         except Exception as e:
             await ctx.channel.send(e)
     else:

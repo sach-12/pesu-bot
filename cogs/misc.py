@@ -94,7 +94,7 @@ class misc(commands.Cog):
             channel = str(channel)
             newChannel = ''
             for i in channel:
-                if(i in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]):
+                if(i in "0123456789"):
                     newChannel += i
                 message = ' '.join(message)
                 newChannel = int(newChannel)
@@ -207,7 +207,7 @@ class misc(commands.Cog):
         channel = str(channel)
         newChannel = ''
         for i in channel:
-            if i in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            if i in "0123456789":
                 newChannel += i
         newChannel = int(newChannel)
         try:
@@ -238,7 +238,7 @@ class misc(commands.Cog):
         channel = str(channel)
         newChannel = ''
         for i in channel:
-            if(i in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']):
+            if(i in "0123456789"):
                 newChannel += i
         newChannel = int(newChannel)
 
@@ -265,6 +265,31 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
+    @bot.command(aliases = ['contribute', 'support'])
+    async def _support(self, ctx, *params):
+        Embeds = discord.Embed(title="Contributions", color=0x00ff00)
+        Embeds.add_field(name="Github repo", value="https://github.com/sach-12/pesu-bot",inline = False)
+        Embeds.add_field(name = '\u200b', value ="If you wish to contribute to the bot, run these steps:",inline = False)
+        rules = {
+            0: "Pull the latest main branch, dont start working with any deprecated versions",
+                
+            1: "Create a new branch called `beta-(discord-username)`",
+
+            2: "Do whatever changes you wish to do and create a pull request with the following information furnished in the request message: 'The cog you wish to change | What did you change'",
+
+            3: "Wait for approval for reviewers. Your PR may be directly accepted or requested for further changes.",
+
+        }
+        for ruleNo in rules:
+            Embeds.add_field(name = '\u200b', value ="`" + str(ruleNo) + '`: ' +  rules[ruleNo],inline = False)
+        
+        stark = ctx.guild.get_member(718845827413442692).mention
+        flabby = ctx.guild.get_member(467341580051939339).mention
+        e11i0t = ctx.guild.get_member(718845827413442692).mention
+        sach = ctx.guild.get_member(723377619420184668).mention
+        Embeds.add_field(name = "Reviewers", value = "`ArvindAROO` - {}\n `Flab-E` - {}\n `Mre11i0t` - {} and\n `sach-12` - {}".format(stark, flabby, e11i0t,sach), inline = False)
+        Embeds.add_field(name = "Important", value = "**Under no circumstances is anyone allowed to merge to the main branch.**",inline = False)
+        await ctx.send(embed=Embeds)
 
     @commands.command(aliases=['kick'])
     async def _kick(self, ctx, member, *reason):
