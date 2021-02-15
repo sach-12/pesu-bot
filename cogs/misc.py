@@ -86,6 +86,7 @@ class misc(commands.Cog):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             try:
                 message = list(message)
+                url = message[0].url
                 channel = message[0]
                 message = message[1:]
             except Exception as e:
@@ -100,7 +101,7 @@ class misc(commands.Cog):
                 newChannel = int(newChannel)
                 if(newChannel == ctx.channel.id):
                     await ctx.channel.purge(limit=1)
-                await self.client.get_channel(newChannel).send(message)
+                await self.client.get_channel(newChannel).send(message,url = message.url)
         else:
             await ctx.channel.send("Sucka you can't do that")
 
