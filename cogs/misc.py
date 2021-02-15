@@ -35,7 +35,7 @@ class misc(commands.Cog):
     @commands.command(aliases=['c', 'count'])
     async def _count(self, ctx, *roleName):
         roleName = ' '.join(roleName)
-        # convert it back into string and split it at '&' and strip the individual roles
+        # convert it back into string and split it at '&' and strip the individual roles.
         try:
             roleName = roleName.split('&')
         except:
