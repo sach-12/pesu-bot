@@ -138,7 +138,7 @@ class server(commands.Cog):
     def getDeverified(self, a=""):
         dat = ""
         ret = False
-        file1 = open('verified.csv', 'r')
+        file1 = open('cogs/verified.csv', 'r')
 
         for line in file1:
             if(a not in line.split(',')):
@@ -148,7 +148,7 @@ class server(commands.Cog):
 
         file1.close()
         
-        file1 = open('verified.csv', 'w')
+        file1 = open('cogs/verified.csv', 'w')
         file1.write(dat)
         file1.close()
 
