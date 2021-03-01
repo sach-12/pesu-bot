@@ -75,32 +75,28 @@ class server(commands.Cog):
         else:
             temp = message.content.replace("`", "|")
             if ('<@&781150455576789032>' in str(temp)):
-                temp = str(temp).replace('@&781150455576789032', 'lawdageng')
                 ping_log = f"{message.author.mention} pinged lawda geng in {message.channel.mention}"
                 ping_embed = discord.Embed(title="Ping", color=0x0000ff)
                 ping_embed.add_field(name="Ping report", value=ping_log, inline=False)
-                ping_embed.add_field(name="Message content", value=str(temp), inline=False)
+                ping_embed.add_field(name="Message content", value=f"https://discord.com/channels/{GUILD_ID}/{message.channel.id}/{message.id}", inline=False)
                 await self.client.get_channel(MOD_LOGS).send(embed=ping_embed)
             if ('<@&750556082371559485>' in str(temp)):
-                temp = str(temp).replace('@&750556082371559485', 'botdev')
                 ping_log = f"{message.author.mention} pinged botdev in {message.channel.mention}"            
                 ping_embed = discord.Embed(title="Ping", color=0x0000ff)
                 ping_embed.add_field(name="Ping report", value=ping_log, inline=False)
-                ping_embed.add_field(name="Message content", value=str(temp), inline=False)
+                ping_embed.add_field(name="Message content", value=f"https://discord.com/channels/{GUILD_ID}/{message.channel.id}/{message.id}", inline=False)
                 await self.client.get_channel(MOD_LOGS).send(embed=ping_embed)
             if ('<@&742798158966292640>' in str(temp)) :
-                temp = str(temp).replace('@&742798158966292640', 'mod')
                 ping_log = f"{message.author.mention} pinged mods in {message.channel.mention}"
                 ping_embed = discord.Embed(title="Ping", color=0x0000ff)
                 ping_embed.add_field(name="Ping report", value=ping_log, inline=False)
-                ping_embed.add_field(name="Message content", value=str(temp), inline=False)
+                ping_embed.add_field(name="Message content", value=f"https://discord.com/channels/{GUILD_ID}/{message.channel.id}/{message.id}", inline=False)
                 await self.client.get_channel(MOD_LOGS).send(embed=ping_embed)
             if ('<@&742800061280550923>' in str(temp)):
-                temp = str(temp).replace('@&742800061280550923', 'admin')
                 ping_log = f"{message.author.mention} pinged admin in {message.channel.mention}"
                 ping_embed = discord.Embed(title="Ping", color=0x0000ff)
                 ping_embed.add_field(name="Ping report", value=ping_log, inline=False)
-                ping_embed.add_field(name="Message content", value=str(temp), inline=False)
+                ping_embed.add_field(name="Message content", value=f"https://discord.com/channels/{GUILD_ID}/{message.channel.id}/{message.id}", inline=False)
                 await self.client.get_channel(MOD_LOGS).send(embed=ping_embed)
 
     
