@@ -193,7 +193,7 @@ class verification(commands.Cog):
 
             # update verified.csv
             with open('cogs/verified.csv', 'a') as file:
-                file.write(f"{user.display_name}, {user.id}," + ','.join(dat).replace('\n', '') + ',verified\n')
+                file.write(f"{user.display_name},{user.id}," + ','.join(dat).replace('\n', '') + ',verified\n')
             
             # add the verified and remove the just joined roles
             await user.add_roles(self.verified)

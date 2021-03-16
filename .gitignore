@@ -133,3 +133,6 @@ dmypy.json
 
 # Nohup.out
 nohup.out
+
+# PEM file
+*.pem
