@@ -364,14 +364,13 @@ class misc(commands.Cog):
 
     @cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname")
     async def _nickchange(self, ctx, member:discord.Member, newname:str):
-        await ctx.defer()
         perms = ctx.channel.permissions_for(ctx.author)
         if((perms.manage_nicknames) and (ctx.author.top_role.position > member.top_role.position)):
             try:
                 await member.edit(nick=newname)
                 await ctx.send(content=f"Nicely changed {member.name}'s name", hidden=True)
             except:
-                await ctx.send(content="One cutie you are, trying to change sach's name only")
+                await ctx.send(content="Can't do this one man!")
         else:
             await ctx.send(content="Soo cute you trying to change someone's nickname")
 
