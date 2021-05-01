@@ -42,7 +42,7 @@ class server(commands.Cog):
         await self.client.get_channel(BOT_LOGS).send(f"Logged in as {self.client.user}")
         await self.client.change_presence(
             status=discord.Status.online,
-            activity=discord.Game(name="with lives"),
+            activity=discord.Game(name="with the PRIDE of PESU"),
         )
 
 

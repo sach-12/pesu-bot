@@ -2,11 +2,13 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+from discord_slash import SlashCommand
 
 load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = commands.Bot(command_prefix='!', help_command=None, intents=discord.Intents().all())
+slash = SlashCommand(client, sync_commands = True, sync_on_cog_reload = True)
 BOT_LOGS = 786084620944146504
 
 @client.command(aliases = ['loadit'])
