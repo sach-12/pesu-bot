@@ -372,12 +372,21 @@ class misc(commands.Cog):
             except:
                 await ctx.send(content="Can't do this one man!")
         else:
-            await ctx.send(content="Soo cute you trying to change someone's nickname")
+            await ctx.send(content=f"Soo cute you trying to change {member.name}'s nickname")
 
     @cog_ext.cog_slash(name="pride", description="Flourishes you with the pride of PESU")
-    async def pride(self, ctx):
-        await ctx.defer()
-        await ctx.send(content="https://media.discordapp.net/attachments/742995787700502565/834782280236662827/Sequence_01_1.gif")
+    async def pride(self, ctx, *, msg_id:str = ''):
+        try:
+            msg_id = int(msg_id)
+            msgObj = await ctx.fetch_message(msg_id)
+            pridereply(ctx, msgObj)
+        except:
+            await ctx.defer()
+            await ctx.send(content="https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
+    
+    def pridereply(ctx, msgObj):
+        ctx.msgObj.reply("https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
+
 
 
 def setup(client):
