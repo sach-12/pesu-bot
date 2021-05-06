@@ -241,8 +241,9 @@ class verification(commands.Cog):
 
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             if(self.getDeverified(str(user.id))):
-                for role in ctx.author.roles[1:]:
+                for role in user.roles[1:]:
                     await user.remove_roles(role)
+                    await user.add_roles(self.just_joined)
                 await ctx.channel.send(f"De-verified {user.mention}")
             else:
                 await ctx.channel.send(f"{ctx.author.mention}, the user has not been verified")

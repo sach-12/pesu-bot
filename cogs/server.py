@@ -64,7 +64,7 @@ class server(commands.Cog):
     async def on_member_remove(self, user):
         await self.client.get_channel(BOT_LOGS).send(f"{str(user)} just left.")
         await self.client.get_channel(BOT_LOGS).send(f"i.e., {str(user.mention)} just left")
-        if(server.getDeverified(str(user.id))):
+        if(self.getDeverified(str(user.id))):
             await self.client.get_channel(BOT_LOGS).send("Deverified the user")
 
 
