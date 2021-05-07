@@ -4,6 +4,7 @@ from time import sleep
 from discord.utils import get
 import asyncio
 from discord_slash import cog_ext
+import os
 
 GUILD_ID = 742797665301168220
 MOD_LOGS = 778678059879890944
@@ -84,7 +85,8 @@ class misc(commands.Cog):
             title="Echo", color=0x48BF91, desciption=self.echo)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             try:
-                message = list(message)
+                message1 = list(message)
+                attachment = message.attachments
             except Exception as e:
                 await ctx.channel.send(f"Lawda I'm getting this:\n{str(e)}", embed=echo_embed)
                 return
@@ -93,15 +95,19 @@ class misc(commands.Cog):
             for i in channel:
                 if(i in "0123456789"):
                     newChannel += i
-            message = ' '.join(message)
+            message1 = ' '.join(message1)
             newChannel = int(newChannel)
             if(newChannel == ctx.channel.id):
                 await ctx.channel.purge(limit=1)
-            await self.client.get_channel(newChannel).send(message)
+            await self.client.get_channel(newChannel).send(message1)
+            if(len(attachment) != 0):
+                await attachment[0].save(attachment[0].filename)
+                await self.client.get_channel(newChannel).send(file=discord.File(attachment[0].filename))
+                os.remove(attachment[0].filename)
         else:
             await ctx.channel.send("Sucka you can't do that")
 
-    @commands.command(aliases=['mute'])
+    @ commands.command(aliases=['mute'])
     async def _mute(self, ctx, member, time, *reason):
         mute_help_embed = discord.Embed(
             title="Mute", color=0x48BF91, description=self.mute)
@@ -175,7 +181,7 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda you're not authorised to do that")
 
-    @commands.command(aliases=['unmute'])
+    @ commands.command(aliases=['unmute'])
     async def _unmute(self, ctx, member: discord.Member):
         unmute_help_embed = discord.Embed(
             title="Unmute", color=0x48BF91, description=self.unmute)
@@ -202,7 +208,7 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda you're not authorised to do that")
 
-    @commands.command(aliases=['lock'])
+    @ commands.command(aliases=['lock'])
     async def _lock_channel(self, ctx, channel, *reason):
         lock_help_embed = discord.Embed(
             title="Embed", color=0x48BF91, description=self.lock)
@@ -241,7 +247,7 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
-    @commands.command(aliases=['unlock'])
+    @ commands.command(aliases=['unlock'])
     async def _unlock_channel(self, ctx, channel):
         unlock_help_embed = discord.Embed(
             title="Unlock", color=0x48BF91, description=self.unlock)
@@ -280,7 +286,7 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
-    @commands.command(aliases=['contribute', 'support'])
+    @ commands.command(aliases=['contribute', 'support'])
     async def _support(self, ctx, *params):
         Embeds = discord.Embed(title="Contributions", color=0x00ff00)
         Embeds.add_field(
@@ -311,7 +317,7 @@ class misc(commands.Cog):
             name="Important", value="**Under no circumstances is anyone allowed to merge to the main branch.**", inline=False)
         await ctx.send(embed=Embeds)
 
-    @commands.command(aliases=['kick'])
+    @ commands.command(aliases=['kick'])
     async def _kick(self, ctx, member, *reason):
         kick_help_embed = discord.Embed(
             title="Kick", color=0x48BF91, desciption=self.kick)
@@ -362,8 +368,8 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
-    @cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname")
-    async def _nickchange(self, ctx, member:discord.Member, newname:str):
+    @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname")
+    async def _nickchange(self, ctx, member: discord.Member, newname: str):
         perms = ctx.channel.permissions_for(ctx.author)
         if((perms.manage_nicknames) and (ctx.author.top_role.position > member.top_role.position)):
             try:
@@ -374,8 +380,8 @@ class misc(commands.Cog):
         else:
             await ctx.send(content=f"Soo cute you trying to change {member.name}'s nickname")
 
-    @cog_ext.cog_slash(name="pride", description="Flourishes you with the pride of PESU")
-    async def pride(self, ctx, *, msg_id:str = ''):
+    @ cog_ext.cog_slash(name="pride", description="Flourishes you with the pride of PESU")
+    async def pride(self, ctx, *, msg_id: str = ''):
         try:
             msg_id = int(msg_id)
             msgObj = await ctx.fetch_message(msg_id)
@@ -383,10 +389,10 @@ class misc(commands.Cog):
         except:
             await ctx.defer()
             await ctx.send(content="https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
-    
-    def pridereply(ctx, msgObj):
-        ctx.msgObj.reply("https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
 
+    def pridereply(ctx, msgObj):
+        ctx.msgObj.reply(
+            "https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
 
 
 def setup(client):
