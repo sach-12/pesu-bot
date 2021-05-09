@@ -86,7 +86,7 @@ class misc(commands.Cog):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             try:
                 message1 = list(message)
-                attachment = message.attachments
+                attachment = ctx.message.attachments
             except Exception as e:
                 await ctx.channel.send(f"Lawda I'm getting this:\n{str(e)}", embed=echo_embed)
                 return
