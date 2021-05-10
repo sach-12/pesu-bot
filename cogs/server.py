@@ -29,78 +29,6 @@ chrome_options.add_argument('--ignore-certificate-errors')
 TODAY_ANNOUNCEMENTS_MADE = list()
 ALL_ANNOUNCEMENTS_MADE = list() 
 
-async def getPESUAnnouncements(chrome, username, password):
-    chrome.get("https://pesuacademy.com/Academy")
-    await asyncio.sleep(2)
-
-    username_box = chrome.find_element_by_xpath(r'//*[@id="j_scriptusername"]')
-    password_box = chrome.find_element_by_xpath(r'//*[@name="j_password"]')
-
-    username_box.send_keys(username)
-    await asyncio.sleep(0.3)
-    password_box.send_keys(password)
-    await asyncio.sleep(0.3)
-
-    sign_in_button = chrome.find_element_by_xpath(
-        r'//*[@id="postloginform#/Academy/j_spring_security_check"]')
-    sign_in_button.click()
-    await asyncio.sleep(1)
-
-    menu_options = chrome.find_elements_by_xpath(r'//*[@class="menu-name"]')
-    menu_options[8].click()
-    await asyncio.sleep(1)
-
-    announcement_boxes = chrome.find_elements_by_xpath(
-        r'//*[@class="elem-info-wrapper"]')
-    announcement_boxes.extend(chrome.find_elements_by_xpath(
-        r'//*[@class="elem-info-wrapper  "]'))
-
-    data = list()
-    for a_box in announcement_boxes:
-        header_box = a_box.find_element_by_xpath(r'.//*[@class="text-info"]')
-        header = header_box.text
-
-        date_box = a_box.find_element_by_xpath(
-            r'.//*[@class="text-muted text-date pull-right"]')
-        date = datetime.strptime(date_box.text, "%d-%B-%Y").date()
-
-        bodies = a_box.find_elements_by_xpath(r'.//*[@class="col-md-12"]')
-        all_attachments = list()
-        if not bodies:
-            bodies = a_box.find_elements_by_xpath(r'.//*[@class="col-md-8"]')
-        for b in bodies:
-            paragraphs = b.find_elements_by_tag_name("p")
-            attachments = b.find_elements_by_xpath(
-                r'.//*[@class="pesu-ico-download"]')
-            attachment_names = b.find_elements_by_tag_name("a")
-            if paragraphs:
-                content = '\n'.join([p.text for p in paragraphs])
-            if attachments:
-                attachment_names = [
-                    a_name.text for a_name in attachment_names if a_name.text != "Read more"]
-                print(attachment_names)
-                all_attachments.extend(attachment_names)
-                for a in attachments:
-                    a.click()
-
-        img_base64 = None
-        img_box = a_box.find_elements_by_xpath(
-            r'.//*[@class="img-responsive"]')
-        if img_box:
-            img_base64 = img_box[0].get_attribute("src")
-
-        temp = {
-            "date": date,
-            "header": header,
-            "body": content,
-            "img": img_base64,
-            "attachments": all_attachments
-        }
-
-        data.append(temp)
-
-    return data
-
 class server(commands.Cog):
 
     def __init__(self, client):
@@ -244,8 +172,80 @@ class server(commands.Cog):
 
         return ret
 
+    async def getPESUAnnouncements(self, chrome, username, password):
+        chrome.get("https://pesuacademy.com/Academy")
+        await asyncio.sleep(2)
+
+        username_box = chrome.find_element_by_xpath(r'//*[@id="j_scriptusername"]')
+        password_box = chrome.find_element_by_xpath(r'//*[@name="j_password"]')
+
+        username_box.send_keys(username)
+        await asyncio.sleep(0.3)
+        password_box.send_keys(password)
+        await asyncio.sleep(0.3)
+
+        sign_in_button = chrome.find_element_by_xpath(
+            r'//*[@id="postloginform#/Academy/j_spring_security_check"]')
+        sign_in_button.click()
+        await asyncio.sleep(1)
+
+        menu_options = chrome.find_elements_by_xpath(r'//*[@class="menu-name"]')
+        menu_options[8].click()
+        await asyncio.sleep(1)
+
+        announcement_boxes = chrome.find_elements_by_xpath(
+            r'//*[@class="elem-info-wrapper"]')
+        announcement_boxes.extend(chrome.find_elements_by_xpath(
+            r'//*[@class="elem-info-wrapper  "]'))
+
+        data = list()
+        for a_box in announcement_boxes:
+            header_box = a_box.find_element_by_xpath(r'.//*[@class="text-info"]')
+            header = header_box.text
+
+            date_box = a_box.find_element_by_xpath(
+                r'.//*[@class="text-muted text-date pull-right"]')
+            date = datetime.strptime(date_box.text, "%d-%B-%Y").date()
+
+            bodies = a_box.find_elements_by_xpath(r'.//*[@class="col-md-12"]')
+            all_attachments = list()
+            if not bodies:
+                bodies = a_box.find_elements_by_xpath(r'.//*[@class="col-md-8"]')
+            for b in bodies:
+                paragraphs = b.find_elements_by_tag_name("p")
+                attachments = b.find_elements_by_xpath(
+                    r'.//*[@class="pesu-ico-download"]')
+                attachment_names = b.find_elements_by_tag_name("a")
+                if paragraphs:
+                    content = '\n'.join([p.text for p in paragraphs])
+                if attachments:
+                    attachment_names = [
+                        a_name.text for a_name in attachment_names if a_name.text != "Read more"]
+                    print(attachment_names)
+                    all_attachments.extend(attachment_names)
+                    for a in attachments:
+                        a.click()
+
+            img_base64 = None
+            img_box = a_box.find_elements_by_xpath(
+                r'.//*[@class="img-responsive"]')
+            if img_box:
+                img_base64 = img_box[0].get_attribute("src")
+
+            temp = {
+                "date": date,
+                "header": header,
+                "body": content,
+                "img": img_base64,
+                "attachments": all_attachments
+            }
+
+            data.append(temp)
+
+        return data
+
     @commands.command(aliases=["news"])
-    async def pesunews(ctx, *, query=None):
+    async def pesunews(self, ctx, *, query=None):
         global TODAY_ANNOUNCEMENTS_MADE
         global ALL_ANNOUNCEMENTS_MADE
 
@@ -320,7 +320,7 @@ class server(commands.Cog):
         print("Fetching announcements...")
         driver = webdriver.Chrome(
             executable_path=CHROMEDRIVER_PATH, options=chrome_options)
-        all_announcements = await getPESUAnnouncements(driver, PESU_SRN, PESU_PWD)
+        all_announcements = await self.getPESUAnnouncements(driver, PESU_SRN, PESU_PWD)
         print(f"Fetched announcements: {len(all_announcements)}")
 
         for a in all_announcements:
