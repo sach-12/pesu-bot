@@ -29,7 +29,7 @@ class beta(commands.Cog):
         self.guildObj = self.client.get_guild(GUILD_ID)
 
     @commands.command(aliases=['pull'])
-    async def _restart(self, ctx):
+    async def git_pull(self, ctx):
         BOT_TEST = 749473757843947671
         if ctx.author.id == 723377619420184668 or ctx.author.id == 718845827413442692:
             p = subprocess.Popen(['git', 'pull'])
@@ -41,7 +41,7 @@ class beta(commands.Cog):
             with open('cogs/verified.csv', 'r') as fp:
                 await self.client.get_channel(BOT_TEST).send(file=discord.File(fp, 'verified.csv'))
             fp.close()
-            p = subprocess.Popen(['python', 'start.py'])
+            p = subprocess.Popen(['python3', 'start.py'])
             sys.exit(0)
 
     
