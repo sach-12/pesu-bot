@@ -80,29 +80,18 @@ class misc(commands.Cog):
             await ctx.channel.send(f"{ctx.author.mention} You are not authorised to do that")
 
     @commands.command(aliases=['e', 'echo'])
-    async def _echo(self, ctx, channel, *message):
+    async def _echo(self, ctx, dest: discord.TextChannel = None, *, message:str=''):
         echo_embed = discord.Embed(
             title="Echo", color=0x48BF91, desciption=self.echo)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
-            try:
-                message1 = list(message)
-                attachment = ctx.message.attachments
-            except Exception as e:
-                await ctx.channel.send(f"Lawda I'm getting this:\n{str(e)}", embed=echo_embed)
-                return
-            channel = str(channel)
-            newChannel = ''
-            for i in channel:
-                if(i in "0123456789"):
-                    newChannel += i
-            message1 = ' '.join(message1)
-            newChannel = int(newChannel)
-            if(newChannel == ctx.channel.id):
+            attachment = ctx.message.attachments
+            if(dest.id == ctx.channel.id):
                 await ctx.channel.purge(limit=1)
-            await self.client.get_channel(newChannel).send(message1)
+            if(message != ''):
+                await dest.send(message)
             if(len(attachment) != 0):
                 await attachment[0].save(attachment[0].filename)
-                await self.client.get_channel(newChannel).send(file=discord.File(attachment[0].filename))
+                await dest.send(file=discord.File(attachment[0].filename))
                 os.remove(attachment[0].filename)
         else:
             await ctx.channel.send("Sucka you can't do that")
