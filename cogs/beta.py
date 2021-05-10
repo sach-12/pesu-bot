@@ -38,6 +38,8 @@ class beta(commands.Cog):
     def __init__(self, client):
         self.client = client
         # slash = SlashCommand(self.client, sync_commands = True)
+        self.checkPESUAnnouncement.start()
+        self.checkNewDay.start()
         
 
     # This file will be used for obsolete code(if needed to be stored) or any other function
