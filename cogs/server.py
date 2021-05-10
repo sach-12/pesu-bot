@@ -46,8 +46,6 @@ class server(commands.Cog):
         self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\n\nLocks the specified channel'
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
-        self.checkPESUAnnouncement.start()
-        self.checkNewDay.start()
 
 
     @commands.Cog.listener()
