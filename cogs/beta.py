@@ -17,8 +17,8 @@ ANNOUNCEMENTS = 810508395546542120
 
 CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
 PESU_SRN=os.getenv('SRN')
-PESU_PWD=os.getenv('PWD')
-
+PESU_PWD=os.getenv('PASSWD')
+print(PESU_PWD)
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
