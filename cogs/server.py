@@ -11,23 +11,23 @@ from selenium import webdriver
 GUILD_ID = 742797665301168220
 BOT_LOGS = 786084620944146504
 MOD_LOGS = 778678059879890944
-ANNOUNCEMENTS = 749628212782563368
+# ANNOUNCEMENTS = 749628212782563368
 
-CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
-GOOGLE_CHROME_BIN = "/app/.apt/usr/bin/google-chrome"
-PESU_SRN=""
-PESU_PWD=""
+# CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
+# GOOGLE_CHROME_BIN = "/app/.apt/usr/bin/google-chrome"
+# PESU_SRN=""
+# PESU_PWD=""
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = GOOGLE_CHROME_BIN
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument('--ignore-ssl-errors=yes')
-chrome_options.add_argument('--ignore-certificate-errors')
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.binary_location = GOOGLE_CHROME_BIN
+# chrome_options.add_argument("--headless")
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument("--no-sandbox")
+# chrome_options.add_argument('--ignore-ssl-errors=yes')
+# chrome_options.add_argument('--ignore-certificate-errors')
 
-TODAY_ANNOUNCEMENTS_MADE = list()
-ALL_ANNOUNCEMENTS_MADE = list() 
+# TODAY_ANNOUNCEMENTS_MADE = list()
+# ALL_ANNOUNCEMENTS_MADE = list() 
 
 class server(commands.Cog):
 

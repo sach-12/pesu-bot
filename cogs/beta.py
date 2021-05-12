@@ -13,15 +13,13 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 GUILD_ID = 742797665301168220
 
-ANNOUNCEMENTS = 749628212782563368
+ANNOUNCEMENTS = 810508395546542120
 
-CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
-GOOGLE_CHROME_BIN = "/app/.apt/usr/bin/google-chrome"
-PESU_SRN=""
-PESU_PWD=""
+CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
+PESU_SRN=os.getenv('SRN')
+PESU_PWD=os.getenv('PWD')
 
 chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = GOOGLE_CHROME_BIN
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--no-sandbox")
