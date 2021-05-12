@@ -49,6 +49,9 @@ class server(commands.Cog):
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
 
+        self.checkPESUAnnouncement.start()
+        self.checkNewDay.start()
+
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -397,7 +400,7 @@ class server(commands.Cog):
         await self.client.get_channel(BOT_LOGS).send(f"Announcements ALL: {len(ALL_ANNOUNCEMENTS_MADE)}")
 
     
-    async def cleanUp():
+    async def cleanUp(self):
         files = [fname for fname in os.listdir() if Path(fname).suffix in [".pdf", ".png", ".jpg", ".jpeg"]]
         for fname in files:
             try:
