@@ -136,3 +136,6 @@ nohup.out
 
 # PEM file
 *.pem
+
+bot/
+.vscode/

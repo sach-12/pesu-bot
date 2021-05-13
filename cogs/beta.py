@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-# from discord.utils import get
 import os
 from dotenv import load_dotenv
 import subprocess
@@ -10,6 +9,7 @@ load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 GUILD_ID = 742797665301168220
+
 
 
 class beta(commands.Cog):
@@ -74,6 +74,7 @@ class beta(commands.Cog):
     #         await ctx.channel.send("You updated to git repo")
     #     else:
     #         await ctx.channel.send("You are not authorised to do that")
+
 
 
 def setup(client):
