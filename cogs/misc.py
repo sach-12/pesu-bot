@@ -5,6 +5,8 @@ from discord.utils import get
 import asyncio
 from discord_slash import cog_ext
 import os
+import subprocess
+import sys
 
 GUILD_ID = 742797665301168220
 MOD_LOGS = 778678059879890944
@@ -357,6 +359,36 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
+
+    @commands.command(aliases=['pull'])
+    async def git_pull(self, ctx):
+        if ctx.author.id == 723377619420184668 or ctx.author.id == 718845827413442692:
+            sys.stdout.flush()
+            p = subprocess.Popen(['git', 'pull'], stdout=subprocess.PIPE)
+            for line in iter(p.stdout.readline,''):
+                if not line:
+                    break
+                await ctx.channel.send(str(line.rstrip(), 'utf-8', 'ignore'))
+            sys.stdout.flush()
+        else:
+            await ctx.channel.send("Lawda you can't execute this command")
+
+    @commands.command(aliases=['restart'])
+    async def _restart(self, ctx):
+        BOT_TEST = 749473757843947671
+        if ctx.author.id == 723377619420184668 or ctx.author.id == 718845827413442692:
+            await self.git_pull(ctx)
+            with open('cogs/verified.csv', 'r') as fp:
+                await self.client.get_channel(BOT_TEST).send(file=discord.File(fp, 'verified.csv'))
+            fp.close()
+            p = subprocess.Popen(['python3', 'start.py'])
+            sys.exit(0)
+        else:
+            await ctx.channel.send("Cuteeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            await asyncio.sleep(1)
+            await ctx.channel.send("NO")
+
+
     @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname")
     async def _nickchange(self, ctx, member: discord.Member, newname: str):
         perms = ctx.channel.permissions_for(ctx.author)
@@ -374,7 +406,7 @@ class misc(commands.Cog):
         try:
             msg_id = int(msg_id)
             msgObj = await ctx.fetch_message(msg_id)
-            pridereply(ctx, msgObj)
+            self.pridereply(ctx, msgObj)
         except:
             await ctx.defer()
             await ctx.send(content="https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")

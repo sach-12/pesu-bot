@@ -1,5 +1,5 @@
 import sys
 import subprocess
 
-p = subprocess.Popen(['startbot'])
+p = subprocess.Popen(['/bin/bash', '-i', '-c', 'startbot'])
 sys.exit(0)

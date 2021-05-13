@@ -60,6 +60,7 @@ class server(commands.Cog):
         self.admin = get(self.guildObj.roles, id=742800061280550923)
         self.mods = get(self.guildObj.roles, id=742798158966292640)
         self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
+        self.budday = get(self.guildObj.roles, id=842294715415396383)
         self.just_joined = get(self.guildObj.roles, id=798765678739062804)
         self.verified = get(self.guildObj.roles, id=749683320941445250)
 
@@ -91,6 +92,12 @@ class server(commands.Cog):
         await self.client.get_channel(BOT_LOGS).send(f"i.e., {str(user.mention)} just left")
         if(self.getDeverified(str(user.id))):
             await self.client.get_channel(BOT_LOGS).send("Deverified the user")
+
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if((self.budday not in before.roles) and (self.budday in after.roles)):
+            await self.client.get_channel(798472825589334036).send(f"Yo, it's {before.mention}'s birthday!")
 
 
     @commands.Cog.listener()
@@ -253,8 +260,6 @@ class server(commands.Cog):
         global TODAY_ANNOUNCEMENTS_MADE
         global ALL_ANNOUNCEMENTS_MADE
 
-        await self.client.get_channel(BOT_LOGS).send(f"Announcements TODAY: {len(TODAY_ANNOUNCEMENTS_MADE)}")
-        await self.client.get_channel(BOT_LOGS).send(f"Announcements ALL: {len(ALL_ANNOUNCEMENTS_MADE)}")
 
         announcements = ALL_ANNOUNCEMENTS_MADE
         N = 1
@@ -324,16 +329,13 @@ class server(commands.Cog):
         global ALL_ANNOUNCEMENTS_MADE
         await self.client.wait_until_ready()
 
-        await self.client.get_channel(BOT_LOGS).send("Fetching announcements...")
         driver = webdriver.Chrome(
             executable_path=CHROMEDRIVER_PATH, options=chrome_options)
         all_announcements = await self.getPESUAnnouncements(driver, PESU_SRN, PESU_PWD)
-        await self.client.get_channel(BOT_LOGS).send(f"Fetched announcements: {len(all_announcements)}")
 
         for a in all_announcements:
             if a not in ALL_ANNOUNCEMENTS_MADE:
                 ALL_ANNOUNCEMENTS_MADE.append(a)
-        await self.client.get_channel(BOT_LOGS).send(f"All announcements found: {len(ALL_ANNOUNCEMENTS_MADE)}")
         ALL_ANNOUNCEMENTS_MADE.sort(key=lambda x: x["date"], reverse=True)
 
         current_date = datetime.now().date()
@@ -396,8 +398,6 @@ class server(commands.Cog):
             TODAY_ANNOUNCEMENTS_MADE = list()
             ALL_ANNOUNCEMENTS_MADE = list()
             await self.cleanUp()
-        await self.client.get_channel(BOT_LOGS).send(f"Announcements TODAY: {len(TODAY_ANNOUNCEMENTS_MADE)}")
-        await self.client.get_channel(BOT_LOGS).send(f"Announcements ALL: {len(ALL_ANNOUNCEMENTS_MADE)}")
 
     
     async def cleanUp(self):
