@@ -7,6 +7,8 @@ from discord_slash import cog_ext
 import os
 import subprocess
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 GUILD_ID = 742797665301168220
 MOD_LOGS = 778678059879890944
@@ -307,6 +309,69 @@ class misc(commands.Cog):
         Embeds.add_field(
             name="Important", value="**Under no circumstances is anyone allowed to merge to the main branch.**", inline=False)
         await ctx.send(embed=Embeds)
+
+    @commands.command(aliases=['poll'])
+    async def poll_command(self, ctx, *, msg:str = ''):
+        poll_help = discord.Embed(title="Start a poll", color=0x2a8a96)
+        poll_help.add_field(name="!poll", value="Usage:\n!poll Message [Option1][Option2]...[Option9]", inline=False)
+        poll_help.add_field(name="\u200b", value="To get results of a poll, use `!pollshow [message ID]`", inline=False)
+        if(msg == ''):
+            await ctx.channel.send(embed=poll_help)
+            return
+        msg_1 = msg.split('[')
+        poll_list = []
+        for i in msg_1:
+            j = (i.replace(']', '').replace('[', ''))
+            if(j == ''):
+                continue
+            poll_list.append(j.strip())
+        if(len(poll_list) == 1):
+            await ctx.channel.send("Not enough parameters")
+            await ctx.channel.send(embed=poll_help)
+        elif(len(poll_list) == 2):
+            await ctx.channel.send("You need more than one choice")
+        elif(len(poll_list) > 10):
+            await ctx.channel.send("Can't have more than nine choice")
+        else:
+            question = poll_list[0]
+            options = poll_list[1:]
+            reactions_list = [':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:']
+            new_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+            poll_embed = discord.Embed(title=question, color=0x7289da)
+            for i in range(len(poll_list)-1):
+                poll_embed.add_field(name="\u200b", value=f"{reactions_list[i]} {options[i]}", inline=False)
+            poll_embed.set_footer(text=f"Poll by {ctx.author}")
+            await ctx.channel.send(embed=poll_embed)
+            required_message = await ctx.channel.fetch_message(ctx.channel.last_message_id)
+            for i in range(len(poll_list)-1):
+                await required_message.add_reaction(new_list[i])
+
+    @commands.command(aliases=['pollshow', 'ps'])
+    async def poll_results(self, ctx, msgid:int):
+        try:
+            msgObj = await ctx.channel.fetch_message(msgid)
+        except:
+            await ctx.channel.send("Poll not found. Make sure you're on the same channel as the poll and try again")
+            return
+        results = []
+        choices = []
+        poll_embed = msgObj.embeds[0]
+        for i in msgObj.reactions:
+            results.append(i.count - 1)
+        for i in poll_embed.fields:
+            choices.append(i.value.split(':')[2].strip())
+        y = np.array(results)
+        plt.pie(y, labels=choices)
+        plt.legend(loc=2)
+        plt.savefig('ps.jpg')
+        file1=discord.File('ps.jpg')
+        os.remove('ps.jpg')
+        poll_results = discord.Embed(title="Poll Results", color=0x7289da)
+        for j in range(len(choices)):
+            poll_results.add_field(name=choices[j], value=f"{results[j]} votes", inline=False)
+        poll_results.set_image(url="attachment://ps.jpg")
+        await ctx.channel.send(embed=poll_results, file=file1)
+        plt.close()
 
     @ commands.command(aliases=['kick'])
     async def _kick(self, ctx, member, *reason):
