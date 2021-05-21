@@ -39,10 +39,11 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if('chad' in message.content.lower()):
+        if('chad' in message.content.lower().replace('‎', '')):
             if((self.muted in message.author.roles) or (self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
                 pass
             else:
+                await message.channel.send("Enjoy 4 hour mute")
                 await self._mute(message, message.author, '4h', 'the c word')
         pass
 
@@ -118,7 +119,12 @@ class misc(commands.Cog):
         if (reason == ""):
             reason = "no reason given"
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (ctx.author.mention == member.mention)):
+        if(ctx.author.mention == member.mention):
+            mod = self.client.get_user(749484661717204992)
+        else:
+            mod = ctx.author
+
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
             if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
@@ -150,7 +156,7 @@ class misc(commands.Cog):
                             await ctx.channel.send(embed=mute_embed)
                             mute_embed_logs = discord.Embed(
                                 title="Mute", color=0xff0000)
-                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {ctx.author.mention}"
+                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {mod.mention}"
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
