@@ -34,7 +34,17 @@ class misc(commands.Cog):
         self.mods = get(self.guildObj.roles, id=742798158966292640)
         self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
         self.bots = get(self.guildObj.roles, id=746226955094851657)
+        self.pesu_bot = get(self.guildObj.roles, id=801011477851013150)
         self.muted = get(self.guildObj.roles, id=775981947079491614)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if('chad' in message.content.lower()):
+            if((self.muted in message.author.roles) or (self.admin in message.author.roles) or (self.mods in message.author.roles)):
+                pass
+            else:
+                await self._mute(message, message.author, '4h', 'the c word')
+        pass
 
     @commands.command(aliases=['c', 'count'])
     async def _count(self, ctx, *roleName):
@@ -101,25 +111,15 @@ class misc(commands.Cog):
             await ctx.channel.send("Sucka you can't do that")
 
     @ commands.command(aliases=['mute'])
-    async def _mute(self, ctx, member, time, *reason):
+    async def _mute(self, ctx, member: discord.Member = None, time = '', reason:str = ''):
         mute_help_embed = discord.Embed(
             title="Mute", color=0x48BF91, description=self.mute)
 
-        reason = list(reason)
-        reason = " ".join(reason)
         if (reason == ""):
             reason = "no reason given"
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
-            if('@' in str(member)):
-                member = str(member)
-                id = ''
-                for i in member:
-                    if(i in '1234567890'):
-                        id += i
-                member = int(id)  # get their id
-                member = ctx.message.guild.get_member(member)
-
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (ctx.author.mention == member.mention)):
+            if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
                     seconds += int(time[:-1]) * 60 * 60 * 24
