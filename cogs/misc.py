@@ -124,7 +124,7 @@ class misc(commands.Cog):
         else:
             mod = ctx.author
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bots in ctx.author.roles)):
             if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
