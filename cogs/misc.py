@@ -40,7 +40,7 @@ class misc(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if('chad' in message.content.lower()):
-            if((self.muted in message.author.roles) or (self.admin in message.author.roles) or (self.mods in message.author.roles)):
+            if((self.muted in message.author.roles) or (self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
                 pass
             else:
                 await self._mute(message, message.author, '4h', 'the c word')
