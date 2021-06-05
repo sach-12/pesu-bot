@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from time import sleep
 from discord.utils import get
 import asyncio
 from discord_slash import cog_ext
@@ -20,7 +19,7 @@ class misc(commands.Cog):
         self.client = client
         self.purge = '`!p` or `!purge`\n!p {amount}\n\nPurges the specified number of messages(limit=1000)'
         self.echo = '`!e` or `!echo`\n!e {Channel mention} {Text}\n\nEchoes a message through the bot to the specified channel'
-        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\n\nMutes the user for the specified time'
+        self.mute = '`!mute`\n!mute {Member mention} {Time} {Reason: optional}\n\nMutes the user for the specified time\nLimit: 14 days'
         self.unmute = '`!unmute`\n!unmute {Member mention}\n\nUnmutes the user'
         self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\n\nLocks the specified channel'
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
@@ -39,13 +38,23 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if('chad' in message.content.lower().replace('‎', '')):
-            if((self.muted in message.author.roles) or (self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
+        if('chad' in message.content.lower().replace('‎', '').replace('chadwick', '')):
+            if((self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
                 pass
             else:
-                await message.channel.send("Enjoy 4 hour mute")
-                await self._mute(message, message.author, '4h', 'the c word')
+                await message.channel.send(f"no telling chad {message.author.mention} <:tengue_fold:762662965387460629>")
         pass
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        if('chad' in after.content.lower().replace('‎', '').replace('chadwick', '')):
+            if((self.admin in after.author.roles) or (self.mods in after.author.roles) or (self.bots in after.author.roles)):
+                pass
+            else:
+                await after.channel.send("nin amn you think you are smart huh")
+                await after.channel.send(f"no editing to chad either {after.author.mention} <:tengue_fold:762662965387460629>")
+        pass
+
 
     @commands.command(aliases=['c', 'count'])
     async def _count(self, ctx, *roleName):
@@ -99,6 +108,9 @@ class misc(commands.Cog):
         echo_embed = discord.Embed(
             title="Echo", color=0x48BF91, desciption=self.echo)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
+            if(dest == None):
+                await ctx.channel.send(embed=echo_embed)
+                return
             attachment = ctx.message.attachments
             if(dest.id == ctx.channel.id):
                 await ctx.channel.purge(limit=1)
@@ -112,19 +124,17 @@ class misc(commands.Cog):
             await ctx.channel.send("Sucka you can't do that")
 
     @ commands.command(aliases=['mute'])
-    async def _mute(self, ctx, member: discord.Member = None, time = '', reason:str = ''):
+    async def _mute(self, ctx, member: discord.Member = None, time = '', *, reason:str = 'no reason given'):
         mute_help_embed = discord.Embed(
             title="Mute", color=0x48BF91, description=self.mute)
 
-        if (reason == ""):
-            reason = "no reason given"
 
-        if(ctx.author.mention == member.mention):
-            mod = self.client.get_user(749484661717204992)
-        else:
-            mod = ctx.author
+        # if(ctx.author.mention == member.mention):
+        #     mod = self.client.get_user(749484661717204992)
+        # else:
+        #     mod = ctx.author
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (mod.id == 749484661717204992)):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
             if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
@@ -136,7 +146,7 @@ class misc(commands.Cog):
                 elif(time.lower().endswith("s")):
                     seconds += int(time[:-1])
 
-                if((seconds <= 0) or (seconds > 2592000)):
+                if((seconds <= 0) or (seconds > 1209600)):
                     await ctx.channel.send(f"{ctx.author.mention}, please enter a valid amount of time", embed=mute_help_embed)
                 else:
                     if(self.muted in member.roles):
@@ -156,7 +166,7 @@ class misc(commands.Cog):
                             await ctx.channel.send(embed=mute_embed)
                             mute_embed_logs = discord.Embed(
                                 title="Mute", color=0xff0000)
-                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {mod.mention}"
+                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {ctx.author.mention}"
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
@@ -208,14 +218,9 @@ class misc(commands.Cog):
             await ctx.channel.send("Lawda you're not authorised to do that")
 
     @ commands.command(aliases=['lock'])
-    async def _lock_channel(self, ctx, channel, *reason):
+    async def _lock_channel(self, ctx, channel, *, reason:str = 'no reason given'):
         lock_help_embed = discord.Embed(
             title="Embed", color=0x48BF91, description=self.lock)
-
-        reason = list(reason)
-        reason = ' '.join(reason)
-        if(reason == ''):
-            reason = 'no reason given'
 
         overwrites = discord.PermissionOverwrite(
             send_messages=False, view_channel=False)
