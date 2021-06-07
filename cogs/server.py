@@ -53,6 +53,8 @@ class server(commands.Cog):
         self.checkPESUAnnouncement.start()
         self.checkNewDay.start()
 
+        self.snipe = None
+
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -143,6 +145,31 @@ class server(commands.Cog):
                     rlist = await rr.users().flatten()
                     if(user in rlist):
                         await rr.remove(user)
+
+                    
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        if(message.author.bot):
+            pass
+        else:
+            self.snipe = message
+            asyncio.sleep(60)
+            self.snipe = None
+
+    @commands.command(aliases=['snipe'])
+    async def _snipe(self, ctx):
+        if(self.snipe == None):
+            await ctx.channel.send("There is nothing to snipe")
+        else:
+            await ctx.channel.send(f"{self.snipe.author.mention} on {self.snipe.channel.mention}: {self.snipe.content}")
+            try:
+                attachment = self.snipe.attachments
+                await attachment[0].save(attachment[0].filename)
+                await ctx.channel.send(file=discord.File(attachment[0].filename))
+                os.remove(attachment[0].filename)
+            except:
+                pass
+            self.snipe = None
 
     
     @commands.command(aliases=['h', 'help'])
