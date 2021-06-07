@@ -153,7 +153,7 @@ class server(commands.Cog):
             pass
         else:
             self.snipe = message
-            asyncio.sleep(60)
+            await asyncio.sleep(60)
             self.snipe = None
 
     @commands.command(aliases=['snipe'])
