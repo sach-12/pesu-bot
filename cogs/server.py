@@ -48,8 +48,8 @@ class server(commands.Cog):
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
 
-        self.checkPESUAnnouncement.start()
-        self.checkNewDay.start()
+        # self.checkPESUAnnouncement.start()
+        # self.checkNewDay.start()
 
         self.snipe = None
 
