@@ -358,7 +358,7 @@ class misc(commands.Cog):
                               ':five:', ':six:', ':seven:', ':eight:', ':nine:']
             new_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
                         '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
-            poll_embed = discord.Embed(title=question, color=0x7289da)
+            poll_embed = discord.Embed(title=question, color=0x7289da, timestamp=datetime.now(IST))
             for i in range(len(poll_list)-1):
                 poll_embed.add_field(
                     name="\u200b", value=f"{reactions_list[i]} {options[i]}", inline=False)
@@ -563,7 +563,7 @@ class misc(commands.Cog):
                     break
             await self.storeId(str(ctx.author_id), str(required_message.id))
         else:
-            await ctx.send("You have been banned from submitting anonymous confessions", hidden=True)
+            await ctx.send(":x: You have been banned from submitting anonymous confessions", hidden=True)
 
     async def storeId(self, memberId: str, messageId: str):
         confessions = self.confessions
@@ -597,7 +597,8 @@ class misc(commands.Cog):
                         banFile.close()
                         try:
                             dm = await self.client.fetch_user(int(key))
-                            await dm.send("You have been banned from submitting confessions")
+                            dm_embed = discord.Embed(title="Notification", description="You have been banned from submitting confessions", color=discord.Color.red())
+                            await dm.send(embed=dm_embed)
                         except:
                             await ctx.send("DMs were closed", hidden=True)
                         return
@@ -627,7 +628,8 @@ class misc(commands.Cog):
                 banFile.close()
                 try:
                     dm = await self.client.fetch_user(int(user_id))
-                    await dm.send("You have been banned from submitting confessions")
+                    dm_embed = discord.Embed(title="Notification", description="You have been banned from submitting confessions", color=discord.Color.red())
+                    await dm.send(embed=dm_embed)
                 except:
                     await ctx.send("DMs were closed", hidden=True)
             else:
@@ -656,7 +658,8 @@ class misc(commands.Cog):
                 await ctx.send("User has been unbanned successfully", hidden=True)
                 try:
                     dm = await self.client.fetch_user(int(user_id))
-                    await dm.send("You have been unbanned from submitting confessions")
+                    dm_embed = discord.Embed(title="Notification", description="You have been unbanned from submitting confessions", color=discord.Color.green())
+                    await dm.send(embed=dm_embed)
                 except:
                     await ctx.send("DMs were closed", hidden=True)
             else:
