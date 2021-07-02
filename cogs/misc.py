@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from discord_slash.utils.manage_commands import create_option
 from datetime import datetime
+import pytz
+IST = pytz.timezone('Asia/Kolkata')
 
 
 GUILD_ID = 742797665301168220
@@ -32,6 +34,7 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        flush_confessions.start()
         await self.client.wait_until_ready()
         self.guildObj = self.client.get_guild(GUILD_ID)
         self.admin = get(self.guildObj.roles, id=742800061280550923)
@@ -549,7 +552,7 @@ class misc(commands.Cog):
             banList.append(line.split('\n')[0].replace('\n', ''))
         if(memberId not in banList):
             confessEmbed = discord.Embed(title="Anonymous confession", color=discord.Color.random(
-            ), description=confession, timestamp=datetime.now())
+            ), description=confession, timestamp=datetime.now(IST))
             dest = self.client.get_channel(860224115633160203)
             await ctx.send(f":white_check_mark: Your confession has been submitted to {dest.mention}", hidden=True)
             await dest.send(embed=confessEmbed)
@@ -658,6 +661,11 @@ class misc(commands.Cog):
                     await ctx.send("DMs were closed", hidden=True)
             else:
                 await ctx.send("This fellow was never banned in the first place", hidden=True)
+
+
+@tasks.loop(hours=24)
+async def flush_confessions(self):
+    self.confessions = {}
 
 
 def setup(client):
