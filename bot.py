@@ -8,7 +8,7 @@ load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = commands.Bot(command_prefix='!', help_command=None, intents=discord.Intents().all())
-slash = SlashCommand(client, sync_commands = True, sync_on_cog_reload = True)
+slash = SlashCommand(client, sync_on_cog_reload = True)
 BOT_LOGS = 786084620944146504
 
 @client.command(aliases = ['loadit'])

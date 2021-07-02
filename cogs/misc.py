@@ -2,15 +2,17 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 import asyncio
-from discord_slash import cog_ext
+from discord_slash import cog_ext, utils
 import os
 import subprocess
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from discord_slash.utils.manage_commands import create_option
 
 GUILD_ID = 742797665301168220
 MOD_LOGS = 778678059879890944
+TOKEN = os.getenv('DISCORD_TOKEN')
 
 
 class misc(commands.Cog):
@@ -24,6 +26,7 @@ class misc(commands.Cog):
         self.lock = '`!lock`\n!lock {Channel mention} {Reason: optional}\n\nLocks the specified channel'
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
+        self.confessions = {}
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -465,31 +468,195 @@ class misc(commands.Cog):
             await ctx.channel.send("NO")
 
 
-    @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname")
-    async def _nickchange(self, ctx, member: discord.Member, newname: str):
+    @commands.command(aliases=['enableconfess'])
+    async def flush_slash(self, ctx):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
+            await ctx.channel.trigger_typing()
+            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
+            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confess', description='Submits an anonymous confession', options=[create_option(name="confession", description="Opinion or confession you want to post anonymously", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
+            await ctx.channel.send("Done")
+            enabled = discord.Embed(title="Announcement from the mods", color=discord.Color.green(), description="The confessions features has been enabled")
+            await self.client.get_channel(860224115633160203).send(embed=enabled)
+            overwrites = discord.PermissionOverwrite(view_channel=False)
+            await self.client.get_channel(860224115633160203).set_permissions(ctx.guild.default_role, overwrite=overwrites)
+        else:
+            await ctx.channel.send("You are not authorised for this")
+
+
+    @commands.command(aliases=['disableconfess'])
+    async def disable_confess(self, ctx):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+            await ctx.channel.trigger_typing()
+            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
+            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
+            await ctx.channel.send("Done")
+            disabled = discord.Embed(title="Announcement from the mods", color=discord.Color.red(), description="The confessions features has been disabled")
+            await self.client.get_channel(860224115633160203).send(embed=disabled)
+            overwrites = discord.PermissionOverwrite(send_messages=False, view_channel=False)
+            await self.client.get_channel(860224115633160203).set_permissions(ctx.guild.default_role, overwrite=overwrites)
+        else:
+            await ctx.channel.send("You are not authorised for this")
+            
+
+    @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname", options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
+    async def nickchange(self, ctx, member: discord.Member, new_name: str):
         perms = ctx.channel.permissions_for(ctx.author)
         if((perms.manage_nicknames) and (ctx.author.top_role.position > member.top_role.position)):
             try:
-                await member.edit(nick=newname)
+                await member.edit(nick=new_name)
                 await ctx.send(content=f"Nicely changed {member.name}'s name", hidden=True)
             except:
                 await ctx.send(content="Can't do this one man!")
         else:
             await ctx.send(content=f"Soo cute you trying to change {member.name}'s nickname")
 
-    @ cog_ext.cog_slash(name="pride", description="Flourishes you with the pride of PESU")
+    @ cog_ext.cog_slash(name="pride", description="Flourishes you with the pride of PESU", options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
     async def pride(self, ctx, *, msg_id: str = ''):
+        # await ctx.defer()
         try:
             msg_id = int(msg_id)
-            msgObj = await ctx.fetch_message(msg_id)
-            self.pridereply(ctx, msgObj)
-        except:
+            msgObj = await ctx.channel.fetch_message(msg_id)
+            await ctx.defer(hidden=True)
+            await msgObj.reply(
+            "https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
+        except Exception as e:
             await ctx.defer()
             await ctx.send(content="https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
 
-    def pridereply(ctx, msgObj):
-        ctx.msgObj.reply(
-            "https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
+    
+    @cog_ext.cog_slash(name="confess", description="Submits an anonymous confession", options=[create_option(name="confession", description="Opinion/confession you want to post anonymously", option_type=3, required=True)])
+    async def confess(self, ctx, *, confession: str):
+        await ctx.defer(hidden=True)
+        banFile = open('cogs/ban_list.csv', 'r')
+        memberId = str(ctx.author_id)
+        banList = []
+        for line in banFile:
+            banList.append(line.split('\n')[0].replace('\n', ''))
+        if(memberId not in banList):
+            confessEmbed = discord.Embed(title="Anonymous confession", color=discord.Color.random(), description=confession)
+            dest = self.client.get_channel(860224115633160203)
+            await ctx.send(f":white_check_mark: Your confession has been submitted to {dest.mention}", hidden=True)
+            await dest.send(embed = confessEmbed)
+            messages = await dest.history(limit=3).flatten()
+            for message in messages:
+                if((message.author.id == 749484661717204992) and (len(message.embeds) > 0)):
+                    required_message = message
+                    break
+            await self.storeId(str(ctx.author_id), str(required_message.id))
+        else:
+            await ctx.send("You have been banned from submitting anonymous confessions", hidden=True)   
+
+
+    async def storeId(self, memberId: str, messageId: str):
+        confessions = self.confessions
+        for key in confessions:
+            if(key == memberId):
+                confessions[key].append(messageId)
+                self.confessions = confessions
+                return
+            else:
+                continue
+        confessions[memberId] = [messageId]
+
+    @cog_ext.cog_slash(name="confessban", description="Bans a user from submitting confessions who submitted a confession based on message ID", options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
+    async def confessban(self, ctx, msg_id:str):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+            await ctx.defer(hidden=True)
+            confessions = self.confessions
+            msg_id_str = str(msg_id)
+            banFile = open('cogs/ban_list.csv', 'r')
+            banList = []
+            for line in banFile:
+                banList.append(line.split('\n')[0].replace('\n', ''))
+            banFile.close()
+            banFile = open('cogs/ban_list.csv', 'a')
+            for key in confessions:
+                msgList = confessions[key]
+                if(msg_id_str in msgList):
+                    if(key not in banList):
+                        banFile.write(f"{key}\n")
+                        await ctx.send("Member banned succesfully", hidden=True)
+                        banFile.close()
+                        try:
+                            dm = await self.client.fetch_user(int(key))
+                            await dm.send("You have been banned from submitting confessions")
+                        except:
+                            await ctx.send("DMs were closed", hidden=True)
+                        return
+                    else:
+                        await ctx.send("This fellow was already banned", hidden=True)
+                else:
+                    continue
+            await ctx.send("Could not ban", hidden=True)
+            banFile.close()
+        else:
+            await ctx.send("You are not authorised to do this")
+
+
+    @cog_ext.cog_slash(name="confessbanuser", description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
+    async def confessbanuser(self, ctx, member:discord.Member):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+            await ctx.defer(hidden=True)
+            user_id = str(member.id)
+            banFile = open('cogs/ban_list.csv', 'r')
+            banList = []
+            for line in banFile:
+                banList.append(line.split('\n')[0].replace('\n', ''))
+            banFile.close()
+            if(user_id not in banList):
+                banFile = open('cogs/ban_list.csv', 'a')
+                banFile.write(f"{user_id}\n")
+                await ctx.send("User banned succesfully", hidden=True)
+                banFile.close()
+                try:
+                    dm = await self.client.fetch_user(int(user_id))
+                    await dm.send("You have been banned from submitting confessions")
+                except:
+                    await ctx.send("DMs were closed", hidden=True)
+            else:
+                await ctx.send("This user has already been banned", hidden=True)
+        else:
+            await ctx.send("You are not authorised for this")
+
+
+    @cog_ext.cog_slash(name="confessunbanuser", description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
+    async def confessunbanuser(self, ctx, member:discord.Member):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+            await ctx.defer(hidden=True)
+            user_id = str(member.id)
+            dat = ''
+            deleted = False
+            banFile = open('cogs/ban_list.csv', 'r')
+            for line in banFile:
+                if(user_id in line.split(',')[0].replace('\n', '')):
+                    deleted = True
+                    continue
+                dat += line
+            banFile.close()
+            if(deleted):
+                banFile = open('cogs/ban_list.csv', 'w')
+                banFile.write(dat)
+                banFile.close()
+                await ctx.send("User has been unbanned successfully", hidden=True)
+                try:
+                    dm = await self.client.fetch_user(int(user_id))
+                    await dm.send("You have been unbanned from submitting confessions")
+                except:
+                    await ctx.send("DMs were closed", hidden=True)
+            else:
+                await ctx.send("This fellow was never banned in the first place", hidden=True)
+
 
 
 def setup(client):

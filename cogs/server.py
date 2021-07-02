@@ -1,9 +1,7 @@
 import discord
 from discord.ext import commands, tasks
-from time import sleep
 import os
 import asyncio
-from dotenv import load_dotenv
 import base64
 from discord.utils import get
 from datetime import datetime
@@ -137,14 +135,19 @@ class server(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if((reaction.message.author.id == 749484661717204992) and (not user.bot) and ('poll by' in reaction.message.embeds[0].footer.text.lower())):
-            for rr in reaction.message.reactions:
-                if(rr == reaction):
-                    pass
-                else:
-                    rlist = await rr.users().flatten()
-                    if(user in rlist):
-                        await rr.remove(user)
+        if((reaction.message.author.id == 749484661717204992) and (not user.bot)):
+            try:
+                s = reaction.message.embeds[0].footer.text.lower()
+                if('poll by' in s):
+                    for rr in reaction.message.reactions:
+                        if(rr == reaction):
+                            pass
+                        else:
+                            rlist = await rr.users().flatten()
+                            if(user in rlist):
+                                await rr.remove(user)
+            except:
+                pass
 
                     
     @commands.Cog.listener()
