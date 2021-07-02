@@ -666,9 +666,9 @@ class misc(commands.Cog):
                 await ctx.send("This fellow was never banned in the first place", hidden=True)
 
 
-@tasks.loop(hours=24)
-async def flush_confessions(self):
-    self.confessions = {}
+    @tasks.loop(hours=24)
+    async def flush_confessions(self):
+        self.confessions = {}
 
 
 def setup(client):
