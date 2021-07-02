@@ -431,7 +431,7 @@ class server(commands.Cog):
         driver.quit()
 
 
-    @tasks.loop(hour=1)
+    @tasks.loop(hours=1)
     async def checkNewDay(self):
         global TODAY_ANNOUNCEMENTS_MADE
         global ALL_ANNOUNCEMENTS_MADE
