@@ -34,7 +34,7 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        flush_confessions.start()
+        self.flush_confessions.start()
         await self.client.wait_until_ready()
         self.guildObj = self.client.get_guild(GUILD_ID)
         self.admin = get(self.guildObj.roles, id=742800061280550923)
