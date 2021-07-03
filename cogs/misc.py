@@ -483,7 +483,7 @@ class misc(commands.Cog):
             await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confess', description='Submits an anonymous confession', options=[create_option(name="confession", description="Opinion or confession you want to post anonymously", option_type=3, required=True)])
+            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confess', description='Submits an anonymous confession', options=[create_option(name="confession", description="Opinion or confession you want to post anonymously", option_type=3, required=True), create_option(name="msg_id", description="Message you want this confession to reply to", option_type=3, required=False)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
@@ -542,8 +542,8 @@ class misc(commands.Cog):
             await ctx.defer()
             await ctx.send(content="https://tenor.com/view/pes-pesuniversity-pesu-may-the-pride-of-pes-may-the-pride-of-pes-be-with-you-gif-21274060")
 
-    @cog_ext.cog_slash(name="confess", description="Submits an anonymous confession", options=[create_option(name="confession", description="Opinion/confession you want to post anonymously", option_type=3, required=True)])
-    async def confess(self, ctx, *, confession: str):
+    @cog_ext.cog_slash(name="confess", description="Submits an anonymous confession", options=[create_option(name="confession", description="Opinion/confession you want to post anonymously", option_type=3, required=True), create_option(name="msg_id", description="Message you want this confession to reply to", option_type=3, required=False)])
+    async def confess(self, ctx, *, confession: str, msg_id:str = ''):
         await ctx.defer(hidden=True)
         banFile = open('cogs/ban_list.csv', 'r')
         memberId = str(ctx.author_id)
@@ -555,7 +555,12 @@ class misc(commands.Cog):
             ), description=confession, timestamp=datetime.now(IST))
             dest = self.client.get_channel(860224115633160203)
             await ctx.send(f":white_check_mark: Your confession has been submitted to {dest.mention}", hidden=True)
-            await dest.send(embed=confessEmbed)
+            try:
+                msg_id = int(msg_id)
+                msgObj = await dest.fetch_message(msg_id)
+                await msgObj.reply(embed=confessEmbed)
+            except:
+                await dest.send(embed=confessEmbed)
             messages = await dest.history(limit=3).flatten()
             for message in messages:
                 if((message.author.id == 749484661717204992) and (len(message.embeds) > 0)):
