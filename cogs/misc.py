@@ -1,3 +1,5 @@
+import time
+import datetime
 import discord
 from discord.ext import commands, tasks
 from discord.utils import get
@@ -34,6 +36,7 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.startTime = int(time.time())
         self.flush_confessions.start()
         await self.client.wait_until_ready()
         self.guildObj = self.client.get_guild(GUILD_ID)
@@ -62,6 +65,12 @@ class misc(commands.Cog):
                 await after.channel.send("nin amn you think you are smart huh")
                 await after.channel.send(f"no editing to chad either {after.author.mention} <:tengue_fold:762662965387460629>")
         pass
+    
+    @commands.command(aliases = ['uptime', 'ut'])
+    async def _upTime(self, ctx):
+        currTime = int(time.time())
+        seconds = (currTime - self.startTime)//1
+        await ctx.send("The bots uptime is {}".format(str(datetime.timedelta(seconds = seconds))))
 
     @commands.command(aliases=['c', 'count'])
     async def _count(self, ctx, *roleName):
