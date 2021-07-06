@@ -11,7 +11,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from discord_slash.utils.manage_commands import create_option
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 IST = pytz.timezone('Asia/Kolkata')
 
@@ -70,7 +70,7 @@ class misc(commands.Cog):
     async def _upTime(self, ctx):
         currTime = int(time.time())
         seconds = (currTime - self.startTime)//1
-        await ctx.send("The bots uptime is {}".format(str(datetime.timedelta(seconds = seconds))))
+        await ctx.send("Bot uptime: `{}`".format(str(timedelta(seconds = seconds))))
 
     @commands.command(aliases=['c', 'count'])
     async def _count(self, ctx, *roleName):
