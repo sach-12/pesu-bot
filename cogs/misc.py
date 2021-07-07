@@ -553,6 +553,7 @@ class misc(commands.Cog):
 
     @cog_ext.cog_slash(name="confess", description="Submits an anonymous confession", options=[create_option(name="confession", description="Opinion/confession you want to post anonymously", option_type=3, required=True), create_option(name="msg_id", description="Message you want this confession to reply to", option_type=3, required=False)])
     async def confess(self, ctx, *, confession: str, msg_id:str = ''):
+        bannedWords = ['depp']
         await ctx.defer(hidden=True)
         banFile = open('cogs/ban_list.csv', 'r')
         memberId = str(ctx.author_id)
@@ -560,6 +561,12 @@ class misc(commands.Cog):
         for line in banFile:
             banList.append(line.split('\n')[0].replace('\n', ''))
         if(memberId not in banList):
+            checkString = ''.join(e for e in confession if e.isalnum()) #remove all spl chars from strings which could be used for masking of words
+            checkString = checkString.lower()
+            for word in bannedWords:
+                if word in checkString:
+                    await ctx.send(":x: No, the contents of the message are banned from confessions", hidden=True)
+                    return
             confessEmbed = discord.Embed(title="Anonymous confession", color=discord.Color.random(
             ), description=confession, timestamp=datetime.now(IST))
             dest = self.client.get_channel(860224115633160203)
