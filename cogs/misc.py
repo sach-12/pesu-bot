@@ -560,6 +560,12 @@ class misc(commands.Cog):
         for line in banFile:
             banList.append(line.split('\n')[0].replace('\n', ''))
         if(memberId not in banList):
+            if(ctx.author_id == 718056684450480189):
+                deppList = ['depp', 'd3pp']
+                for word in deppList:
+                    if(word in confession):
+                        await ctx.send(":x: You think you are smart eh", hidden=True)
+                        return
             confessEmbed = discord.Embed(title="Anonymous confession", color=discord.Color.random(
             ), description=confession, timestamp=datetime.now(IST))
             dest = self.client.get_channel(860224115633160203)
