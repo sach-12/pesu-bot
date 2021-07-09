@@ -563,7 +563,7 @@ class misc(commands.Cog):
             if(ctx.author_id == 718056684450480189):
                 deppList = ['depp', 'd3pp']
                 for word in deppList:
-                    if(word in confession):
+                    if(word in confession.lower()):
                         await ctx.send(":x: You think you are smart eh", hidden=True)
                         return
             confessEmbed = discord.Embed(title="Anonymous confession", color=discord.Color.random(
