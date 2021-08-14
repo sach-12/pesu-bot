@@ -33,6 +33,7 @@ class misc(commands.Cog):
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
         self.confessions = {}
+        self.muted = {}
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -53,6 +54,7 @@ class misc(commands.Cog):
             if((self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
                 pass
             else:
+                # self.mute(ctx, message.author, '4h')
                 await message.channel.send(f"no telling chad {message.author.mention} <:tengue_fold:762662965387460629>")
         pass
 
@@ -115,7 +117,7 @@ class misc(commands.Cog):
             if(amt > 1000):
                 await ctx.channel.send("Lawda, limit is 1000 okay?", embed=purge_embed)
                 return
-            await ctx.channel.purge(limit=amt)
+            await ctx.channel.purge(limit=amt+1)
         else:
             await ctx.channel.send(f"{ctx.author.mention} You are not authorised to do that")
 
@@ -145,7 +147,9 @@ class misc(commands.Cog):
             title="Mute", color=0x48BF91, description=self.mute)
 
         if(ctx.author.mention == member.mention):
-            mod = self.client.get_user(749484661717204992)
+            await ctx.send("Well......")
+            time.sleep(0.5)
+            await ctx.send("No")
         else:
             mod = ctx.author
 
@@ -185,21 +189,38 @@ class misc(commands.Cog):
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
+                            muteTime = int(time.time())
+                            if member.id in self.muted:
+                                self.muted[member.id] = muteTime
+                            else:
+                                self.muted[member.id] = muteTime
+                            #store the timestamp of mute
                             await asyncio.sleep(seconds)
                             if(self.muted in member.roles):
-                                unmute_embed = discord.Embed(
-                                    title="Unmute", color=0x00ff00)
-                                unmute_user = f"{member.mention} welcome back"
-                                unmute_embed.add_field(
-                                    name="Unmuted user", value=unmute_user)
-                                await ctx.channel.send(embed=unmute_embed)
-                                unmute_embed_logs = discord.Embed(
-                                    title="Unmute", color=0x00ff00)
-                                unmute_details_logs = f"{member.mention}\n Moderator: Auto"
-                                unmute_embed_logs.add_field(
-                                    name="Unmuted user", value=unmute_details_logs)
-                                await self.client.get_channel(MOD_LOGS).send(embed=unmute_embed_logs)
-                                await member.remove_roles(self.muted)
+                                if member.id in self.muted:
+                                    if self.muted[member.id] == muteTime:
+                                        #if the time in memory of auto-unmute is same as the time of mute
+                                        #then its the correct mute-unmute pair
+                                        unmute_embed = discord.Embed(
+                                            title="Unmute", color=0x00ff00)
+                                        unmute_user = f"{member.mention} welcome back"
+                                        unmute_embed.add_field(
+                                            name="Unmuted user", value=unmute_user)
+                                        await ctx.channel.send(embed=unmute_embed)
+                                        unmute_embed_logs = discord.Embed(
+                                            title="Unmute", color=0x00ff00)
+                                        unmute_details_logs = f"{member.mention}\n Moderator: Auto"
+                                        unmute_embed_logs.add_field(
+                                            name="Unmuted user", value=unmute_details_logs)
+                                        await self.client.get_channel(MOD_LOGS).send(embed=unmute_embed_logs)
+                                        await member.remove_roles(self.muted)
+                                    else:
+                                        pass
+                                else:
+                                    pass
+                            else:
+                                if member.id in self.muted:
+                                    self.muted.pop(member.id)
             else:
                 await ctx.channel.send(f"{ctx.author.mention}, mention the user, not just the name", embed=mute_help_embed)
         else:
@@ -227,6 +248,8 @@ class misc(commands.Cog):
                         name="Unmuted user", value=unmute_details_logs)
                     await self.client.get_channel(MOD_LOGS).send(embed=unmute_embed_logs)
                     await member.remove_roles(self.muted)
+                    if member.id in self.muted:
+                        self.muted.pop(member.id)
             except:
                 await ctx.channel.send(embed=unmute_help_embed)
         else:
