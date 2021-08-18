@@ -34,19 +34,29 @@ class misc(commands.Cog):
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
         self.confessions = {}
         self.muted = {}
+        self.load_roles()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.startTime = int(time.time())
-        self.flush_confessions.start()
+        # self.startTime = int(time.time())
+        # self.flush_confessions.start()
         await self.client.wait_until_ready()
-        self.guildObj = self.client.get_guild(GUILD_ID)
-        self.admin = get(self.guildObj.roles, id=742800061280550923)
-        self.mods = get(self.guildObj.roles, id=742798158966292640)
-        self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
-        self.bots = get(self.guildObj.roles, id=746226955094851657)
-        self.pesu_bot = get(self.guildObj.roles, id=801011477851013150)
-        self.muted = get(self.guildObj.roles, id=775981947079491614)
+        self.load_roles()
+
+
+    def load_roles(self):
+        try:
+            self.startTime = int(time.time())
+            self.flush_confessions.start()
+            self.guildObj = self.client.get_guild(GUILD_ID)
+            self.admin = get(self.guildObj.roles, id=742800061280550923)
+            self.mods = get(self.guildObj.roles, id=742798158966292640)
+            self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
+            self.bots = get(self.guildObj.roles, id=746226955094851657)
+            self.pesu_bot = get(self.guildObj.roles, id=801011477851013150)
+            self.muted = get(self.guildObj.roles, id=775981947079491614)
+        except:
+            pass
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -109,7 +119,7 @@ class misc(commands.Cog):
     @commands.command(aliases=['p', 'purge'])
     async def _clear(self, ctx, amt=0):
         purge_embed = discord.Embed(
-            title="Purge", color=0x48BF91, desciption=self.purge)
+            title="Purge", color=0x48BF91, description=self.purge)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             if(amt == 0):
                 await ctx.channel.send("Lawda tell how much you want to purge", embed=purge_embed)
