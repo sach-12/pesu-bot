@@ -418,9 +418,8 @@ class misc(commands.Cog):
         for i in poll_embed.fields:
             choices.append(i.value.split(':')[2].strip())
         for i in msgObj.reactions[:len(choices)]:
-            await ctx.send("{} - {}".format(i, i.count-1))
             results.append(i.count - 1)
-        await ctx.send(results)
+
         y = np.array(results)
         # pltAlt = plt
         plt.pie(y, labels=choices)
