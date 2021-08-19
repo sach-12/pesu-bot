@@ -417,14 +417,16 @@ class misc(commands.Cog):
             return
         for i in poll_embed.fields:
             choices.append(i.value.split(':')[2].strip())
-        for i in msgObj.reactions[:len(choices)-1]:
+        for i in msgObj.reactions[:len(choices)]:
             results.append(i.count - 1)
+
         y = np.array(results)
+        # pltAlt = plt
         plt.pie(y, labels=choices)
         plt.legend(loc=2)
         plt.savefig('ps.jpg')
         file1 = discord.File('ps.jpg')
-        os.remove('ps.jpg')
+
         poll_results = discord.Embed(title="Poll Results", color=0x7289da)
         for j in range(len(choices)):
             poll_results.add_field(
@@ -432,7 +434,8 @@ class misc(commands.Cog):
         poll_results.set_image(url="attachment://ps.jpg")
         await ctx.channel.send(embed=poll_results, file=file1)
         plt.close()
-        
+        os.remove('ps.jpg')
+    
 
     @ commands.command(aliases=['kick'])
     async def _kick(self, ctx, member, reason:str = ""):
