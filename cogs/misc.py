@@ -2,6 +2,7 @@ import time
 import datetime
 import discord
 from discord.ext import commands, tasks
+from discord.ext.commands.converter import CategoryChannelConverter
 from discord.utils import get
 import asyncio
 from discord_slash import cog_ext, utils
@@ -13,6 +14,7 @@ import numpy as np
 from discord_slash.utils.manage_commands import create_option
 from datetime import datetime, timedelta
 import pytz
+from asyncio import sleep
 IST = pytz.timezone('Asia/Kolkata')
 
 
@@ -33,21 +35,19 @@ class misc(commands.Cog):
         self.unlock = '`!unlock`\n!unlock {Channel mention}\n\nUnlocks the specified channel'
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
         self.confessions = {}
-        self.muted = {}
+        self.mutedict = {}
+        self.startTime = int(time.time())
+        self.flush_confessions.start()
         self.load_roles()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        # self.startTime = int(time.time())
-        # self.flush_confessions.start()
         await self.client.wait_until_ready()
         self.load_roles()
 
 
     def load_roles(self):
         try:
-            self.startTime = int(time.time())
-            self.flush_confessions.start()
             self.guildObj = self.client.get_guild(GUILD_ID)
             self.admin = get(self.guildObj.roles, id=742800061280550923)
             self.mods = get(self.guildObj.roles, id=742798158966292640)
@@ -70,7 +70,7 @@ class misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        if('chad' in after.content.lower().replace('‎', '').replace('chadwick', '')):
+        if(('chad' not in before.content.lower().replace('‎', '').replace('chadwick', '')) and ('chad' in after.content.lower().replace('‎', '').replace('chadwick', ''))):
             if((self.admin in after.author.roles) or (self.mods in after.author.roles) or (self.bots in after.author.roles)):
                 pass
             else:
@@ -85,13 +85,8 @@ class misc(commands.Cog):
         await ctx.send("Bot uptime: `{}`".format(str(timedelta(seconds = seconds))))
 
     @commands.command(aliases=['c', 'count'])
-    async def _count(self, ctx, *roleName):
-        roleName = ' '.join(roleName)
-        # convert it back into string and split it at '&' and strip the individual roles.
-        try:
-            roleName = roleName.split('&')
-        except:
-            pass
+    async def _count(self, ctx, *, roleName:str):
+        roleName = roleName.split('&')
         temp = []
         for i in roleName:
             temp.append(i.strip())
@@ -134,20 +129,24 @@ class misc(commands.Cog):
     @commands.command(aliases=['e', 'echo'])
     async def _echo(self, ctx, dest: discord.TextChannel = None, *, message: str = ''):
         echo_embed = discord.Embed(
-            title="Echo", color=0x48BF91, desciption=self.echo)
+            title="Echo", color=0x48BF91, description=self.echo)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             if(dest == None):
                 await ctx.channel.send(embed=echo_embed)
                 return
             attachment = ctx.message.attachments
             if(dest.id == ctx.channel.id):
-                await ctx.channel.purge(limit=1)
-            if(message != ''):
-                await dest.send(message)
+                await ctx.message.delete()
+            # if(message != ''):
+            #     sent = await dest.send(message)
             if(len(attachment) != 0):
                 await attachment[0].save(attachment[0].filename)
-                await dest.send(file=discord.File(attachment[0].filename))
+                sent = await dest.send(file=discord.File(attachment[0].filename))
                 os.remove(attachment[0].filename)
+                if(message != ''):
+                    await sent.edit(content=message)
+            else:
+                await dest.send(content=message)
         else:
             await ctx.channel.send("Sucka you can't do that")
 
@@ -156,14 +155,14 @@ class misc(commands.Cog):
         mute_help_embed = discord.Embed(
             title="Mute", color=0x48BF91, description=self.mute)
 
-        if(ctx.author.mention == member.mention):
-            await ctx.send("Well......")
-            time.sleep(0.5)
-            await ctx.send("No")
-        else:
-            mod = ctx.author
+        # if(ctx.author.mention == member.mention):
+        #     await ctx.send("Well......")
+        #     await sleep(0.5)
+        #     await ctx.send("No")
+        # else:
+        #     mod = ctx.author
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (mod.id == 749484661717204992)):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
             if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
@@ -195,20 +194,20 @@ class misc(commands.Cog):
                             await ctx.channel.send(embed=mute_embed)
                             mute_embed_logs = discord.Embed(
                                 title="Mute", color=0xff0000)
-                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {mod.mention}"
+                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {ctx.author.mention}"
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
                             muteTime = int(time.time())
-                            if member.id in self.muted:
-                                self.muted[member.id] = muteTime
+                            if member.id in self.mutedict:
+                                self.mutedict[member.id] = muteTime
                             else:
-                                self.muted[member.id] = muteTime
+                                self.mutedict[member.id] = muteTime
                             #store the timestamp of mute
                             await asyncio.sleep(seconds)
                             if(self.muted in member.roles):
-                                if member.id in self.muted:
-                                    if self.muted[member.id] == muteTime:
+                                if member.id in self.mutedict:
+                                    if self.mutedict[member.id] == muteTime:
                                         #if the time in memory of auto-unmute is same as the time of mute
                                         #then its the correct mute-unmute pair
                                         unmute_embed = discord.Embed(
@@ -229,8 +228,8 @@ class misc(commands.Cog):
                                 else:
                                     pass
                             else:
-                                if member.id in self.muted:
-                                    self.muted.pop(member.id)
+                                if member.id in self.mutedict:
+                                    self.mutedict.pop(member.id)
             else:
                 await ctx.channel.send(f"{ctx.author.mention}, mention the user, not just the name", embed=mute_help_embed)
         else:
@@ -266,23 +265,18 @@ class misc(commands.Cog):
             await ctx.channel.send("Lawda you're not authorised to do that")
 
     @ commands.command(aliases=['lock'])
-    async def _lock_channel(self, ctx, channel, *, reason: str = 'no reason given'):
+    async def _lock_channel(self, ctx, *, channelObj = None, reason: str = 'no reason given'):
         lock_help_embed = discord.Embed(
             title="Embed", color=0x48BF91, description=self.lock)
 
         overwrites = discord.PermissionOverwrite(
             send_messages=False, view_channel=False)
-        channel = str(channel)
-        newChannel = ''
-        for i in channel:
-            if i in "0123456789":
-                newChannel += i
-        newChannel = int(newChannel)
-        try:
-            channelObj = self.client.get_channel(newChannel)
-        except:
-            await ctx.channel.send(embed=lock_help_embed)
-            return
+        if(channelObj == None):
+            channelObj = ctx.channel
+        if(channelObj not in ctx.guild.channels):
+            reason = str(channelObj)
+            channelObj = ctx.channel
+        
 
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
             await channelObj.set_permissions(ctx.guild.default_role, overwrite=overwrites)
@@ -300,23 +294,14 @@ class misc(commands.Cog):
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
     @ commands.command(aliases=['unlock'])
-    async def _unlock_channel(self, ctx, channel):
+    async def _unlock_channel(self, ctx, channelObj:discord.TextChannel = None):
         unlock_help_embed = discord.Embed(
             title="Unlock", color=0x48BF91, description=self.unlock)
         overwrites = discord.PermissionOverwrite(view_channel=False)
 
-        channel = str(channel)
-        newChannel = ''
-        for i in channel:
-            if(i in "0123456789"):
-                newChannel += i
-        newChannel = int(newChannel)
+        if(channelObj == None):
+            channelObj = ctx.channel
 
-        try:
-            channelObj = self.client.get_channel(newChannel)
-        except:
-            await ctx.channel.send(embed=unlock_help_embed)
-            return
         perms = channelObj.overwrites_for(ctx.guild.default_role)
 
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
@@ -346,11 +331,11 @@ class misc(commands.Cog):
         Embeds.add_field(
             name='\u200b', value="If you wish to contribute to the bot, run these steps:", inline=False)
         rules = {
-            0: "Pull the latest main branch, dont start working with any deprecated versions",
+            0: "Fork the repository with the latest main branch. Don't start working with any deprecated versions",
 
-            1: "Create a new branch called `beta-(discord-username)`",
+            1: "Make any changes/additions you wish to do",
 
-            2: "Do whatever changes you wish to do and create a pull request with the following information furnished in the request message: 'The cog you wish to change | What did you change'",
+            2: "Start a pull request with the following information furnished in the request message: 'The cog you wish to change | What did you change'",
 
             3: "Wait for approval for reviewers. Your PR may be directly accepted or requested for further changes.",
 
@@ -405,25 +390,35 @@ class misc(commands.Cog):
                 poll_embed.add_field(
                     name="\u200b", value=f"{reactions_list[i]} {options[i]}", inline=False)
             poll_embed.set_footer(text=f"Poll by {ctx.author}")
-            await ctx.channel.send(embed=poll_embed)
-            required_message = await ctx.channel.fetch_message(ctx.channel.last_message_id)
+            required_message = await ctx.channel.send(embed=poll_embed)
             for i in range(len(poll_list)-1):
                 await required_message.add_reaction(new_list[i])
 
     @commands.command(aliases=['pollshow', 'ps'])
-    async def poll_results(self, ctx, msgid: int):
+    async def poll_results(self, ctx, msglink: str = ''):
+        if(msglink == ''):
+            await ctx.channel.send("Message Link is required")
+            return
         try:
-            msgObj = await ctx.channel.fetch_message(msgid)
+            msgcomp = msglink.split('/')
+            msgid = int(msgcomp[-1].strip())
+            msgchannel = int(msgcomp[-2].strip())
+            dest = self.client.get_channel(msgchannel)
+            msgObj = await dest.fetch_message(msgid)
         except:
-            await ctx.channel.send("Poll not found. Make sure you're on the same channel as the poll and try again")
+            await ctx.channel.send("Poll not found.")
             return
         results = []
         choices = []
-        poll_embed = msgObj.embeds[0]
-        for i in msgObj.reactions:
-            results.append(i.count - 1)
+        try:
+            poll_embed = msgObj.embeds[0]
+        except:
+            await ctx.channel.send("This ain't a poll bruh")
+            return
         for i in poll_embed.fields:
             choices.append(i.value.split(':')[2].strip())
+        for i in msgObj.reactions[:len(choices)-1]:
+            results.append(i.count - 1)
         y = np.array(results)
         plt.pie(y, labels=choices)
         plt.legend(loc=2)
@@ -437,14 +432,13 @@ class misc(commands.Cog):
         poll_results.set_image(url="attachment://ps.jpg")
         await ctx.channel.send(embed=poll_results, file=file1)
         plt.close()
+        
 
     @ commands.command(aliases=['kick'])
-    async def _kick(self, ctx, member, *reason):
+    async def _kick(self, ctx, member, reason:str = ""):
         kick_help_embed = discord.Embed(
             title="Kick", color=0x48BF91, desciption=self.kick)
 
-        reason = list(reason)
-        reason = ' '.join(reason)
         if(reason == ""):
             reason = "no reason given"
         if '@' in str(member):

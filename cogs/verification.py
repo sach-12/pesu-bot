@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
-from time import sleep
+from asyncio import sleep
 from discord.utils import get
+from cogs.helpers import helpers
 
 BOT_TEST = 749473757843947671
 BOT_LOGS = 786084620944146504
@@ -37,80 +38,29 @@ class verification(commands.Cog):
         ]
         self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\n\nReturns the information about a verified user on this server'
         self.deverify = '`!d` or `!deverify`\n!d {Member mention}\n\nDeverifies and removes the data of the user from the verified list'
+        self.load_roles()        
 
 
     @commands.Cog.listener()
     async def on_ready(self):
         await self.client.wait_until_ready()
-        self.guildObj = self.client.get_guild(GUILD_ID)
-        self.admin = get(self.guildObj.roles, id=742800061280550923)
-        self.mods = get(self.guildObj.roles, id=742798158966292640)
-        self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
-        self.just_joined = get(self.guildObj.roles, id=798765678739062804)
-        self.verified = get(self.guildObj.roles, id=749683320941445250)
-        self.senior = get(self.guildObj.roles, id=802008729191972905)
+        self.load_roles()
 
 
-    def getuser(self, a=""):
-        if(a == ""):
-            return['error']
-        f = open('cogs/verified.csv', 'r')
-        srn_list = [line.split(',')[3] for line in list(filter(None, f.read().split('\n')))]
-        if(a in srn_list):
-            f.close()
-            return ['Done']
-        f.close()
-
-        if('PES12018' in a):
-            file = open('cogs/batch_2018.csv', 'r')
-        else:
-            file = open('cogs/batch_list.csv', 'r')
-
-        for lin in file:
-            if(a in lin):
-                f.close()
-                return lin.split(',')
-        
-        file.close()
-        return ['error']
-
-
-    def getDeverified(self, a=""):
-        dat = ""
-        ret = False
-        file1 = open('cogs/verified.csv', 'r')
-
-        for line in file1:
-            if(a not in line.split(',')):
-                dat += line
-            else:
-                ret = True
-
-        file1.close()
-        
-        file1 = open('cogs/verified.csv', 'w')
-        file1.write(dat)
-        file1.close()
-
-        return ret
-
-
-    def getVerified(self, a=""):
-        if(a == ""):
-            return ['unverified']
-        file = open('cogs/verified.csv', 'r')
-
-        for line in file:
-            line = line.split(',')
-            if(len(line) > 5):
-                if(a == line[1]):
-                    file.close()
-                    return line
-        file.close()
-        return ['unverified']
+    def load_roles(self):
+        try:
+            self.guildObj = self.client.get_guild(GUILD_ID)
+            self.admin = get(self.guildObj.roles, id=742800061280550923)
+            self.mods = get(self.guildObj.roles, id=742798158966292640)
+            self.bot_devs = get(self.guildObj.roles, id=750556082371559485)
+            self.just_joined = get(self.guildObj.roles, id=798765678739062804)
+            self.verified = get(self.guildObj.roles, id=749683320941445250)
+            self.senior = get(self.guildObj.roles, id=802008729191972905)
+        except:
+            pass
         
 
-    @commands.command(aliases=['v', 'V', 'verify'])
+    @commands.command(aliases=['v', 'V', 'verify', ' verify'])
     async def _verify(self, ctx, SRN=""):
         # embed variables
         success = discord.Embed(title="Sucess", color=0x00FF00)
@@ -136,7 +86,7 @@ class verification(commands.Cog):
             return
 
         # getting credentials from the batch list
-        dat = self.getuser(SRN)
+        dat = helpers(self.client).getuser(SRN)
 
         # if the SRN is already in the verified.csv file
         if("Done" in dat):
@@ -160,7 +110,7 @@ class verification(commands.Cog):
                 if(msg != dat[3]):
                     fail.add_field(name="Section validation failed", value=f"{msg} entered does not match the corresponding SRN {SRN}")
                     await ctx.channel.send(f"{user.mention}", embed=fail)
-                    sleep(6)
+                    await sleep(6)
                     await ctx.channel.purge(limit=4)
                     return
                 await user.add_roles(self.senior)
@@ -170,7 +120,7 @@ class verification(commands.Cog):
                 if(msg.content != dat[0]):
                     fail.add_field(name="PRN validation failed", value=f"PRN ({msg.content}) entered did not match the corresponding SRN ({SRN})")
                     await ctx.channel.send(f"{user.mention}", embed=fail)
-                    sleep(6)
+                    await sleep(6)
                     await ctx.channel.purge(limit=4)
                     return
 
@@ -189,7 +139,7 @@ class verification(commands.Cog):
             for i in range(8):
                 success.add_field(name="{0}".format(self.data_list[i]), value=dat[i])
             await ctx.channel.send(f"{user.mention}", embed=success)
-            sleep(6)
+            await sleep(6)
 
             # update verified.csv
             with open('cogs/verified.csv', 'a') as file:
@@ -209,7 +159,7 @@ class verification(commands.Cog):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             try:
                 user = await commands.MemberConverter().convert(ctx, member)
-                data = self.getVerified(str(user.id))
+                data = helpers(self.client).getVerified(str(user.id))
                 if('unverified' in data):
                     await ctx.channel.send(f"{ctx.author.mention} The user has not been verified yet")
                     return
@@ -240,7 +190,7 @@ class verification(commands.Cog):
             return
 
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
-            if(self.getDeverified(str(user.id))):
+            if(helpers(self.client).getDeverified(str(user.id))):
                 for role in user.roles[1:]:
                     await user.remove_roles(role)
                 await user.add_roles(self.just_joined)
