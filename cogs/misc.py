@@ -1,4 +1,5 @@
 import time
+from time import time as presentTime
 import datetime
 import discord
 from discord.ext import commands, tasks
@@ -36,7 +37,7 @@ class misc(commands.Cog):
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
         self.confessions = {}
         self.mutedict = {}
-        self.startTime = int(time.time())
+        self.startTime = int(presentTime())
         self.flush_confessions.start()
         self.load_roles()
 
@@ -80,7 +81,7 @@ class misc(commands.Cog):
     
     @commands.command(aliases = ['uptime', 'ut'])
     async def _upTime(self, ctx):
-        currTime = int(time.time())
+        currTime = int(presentTime())
         seconds = (currTime - self.startTime)//1
         await ctx.send("Bot uptime: `{}`".format(str(timedelta(seconds = seconds))))
 
@@ -198,7 +199,7 @@ class misc(commands.Cog):
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
-                            muteTime = int(time.time())
+                            muteTime = int(presentTime())
                             if member.id in self.mutedict:
                                 self.mutedict[member.id] = muteTime
                             else:
@@ -223,6 +224,7 @@ class misc(commands.Cog):
                                             name="Unmuted user", value=unmute_details_logs)
                                         await self.client.get_channel(MOD_LOGS).send(embed=unmute_embed_logs)
                                         await member.remove_roles(self.muted)
+                                        self.mutedict.pop(member.id)
                                     else:
                                         pass
                                 else:
@@ -257,8 +259,8 @@ class misc(commands.Cog):
                         name="Unmuted user", value=unmute_details_logs)
                     await self.client.get_channel(MOD_LOGS).send(embed=unmute_embed_logs)
                     await member.remove_roles(self.muted)
-                    if member.id in self.muted:
-                        self.muted.pop(member.id)
+                    if member.id in self.mutedict:
+                        self.mutedict.pop(member.id)
             except:
                 await ctx.channel.send(embed=unmute_help_embed)
         else:
