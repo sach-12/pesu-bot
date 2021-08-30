@@ -12,7 +12,7 @@ import subprocess
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_commands import create_option, create_choice
 from datetime import datetime, timedelta
 import pytz
 from asyncio import sleep
@@ -440,27 +440,19 @@ class misc(commands.Cog):
     
 
     @ commands.command(aliases=['kick'])
-    async def _kick(self, ctx, member, reason:str = ""):
+    async def _kick(self, ctx, memb, *, reason:str = ""):
         kick_help_embed = discord.Embed(
-            title="Kick", color=0x48BF91, desciption=self.kick)
+            title="Kick", color=0x48BF91, description=self.kick)
 
         if(reason == ""):
             reason = "no reason given"
-        if '@' in str(member):
-            member = str(member)
-            id = ''
-            for i in member:
-                if i in '1234567890':
-                    id += i
-            member = int(id)
-            try:
-                member = ctx.message.guild.get_member(member)
-            except:
-                await ctx.channel.send(embed=kick_help_embed)
-                return
-        else:
+        mens = ctx.message.raw_mentions
+        if(len(mens) == 0):
             await ctx.send("Mention the user and not just the name", embed=kick_help_embed)
             return
+        else:
+            member = mens[0]
+            member = await self.guildObj.fetch_member(member)
 
         # a small little spartan easter egg
         if ((self.bots in member.roles) and (ctx.author.id == 621677829100404746)):
@@ -473,18 +465,18 @@ class misc(commands.Cog):
             elif((self.admin in member.roles) or (self.mods in member.roles)):
                 await ctx.channel.send("Gomma you can't kick admin/mod")
             else:
-                await ctx.guild.kick(member)
                 kick_embed = discord.Embed(
                     title="", color=0xff0000, description=f"{member.mention}** was kicked**")
                 await ctx.channel.send(embed=kick_embed)
-                kick_logs = discord.Embed(title="Kick", color=0xff0000)
-                kick_logs.add_field(name="Moderator", value=ctx.author.mention)
-                kick_logs.add_field(name="Reason", value=reason)
+                kick_logs = discord.Embed(title="Kick", color=0xff0000, timestamp=datetime.utcnow())
+                kick_logs.add_field(name="Moderator", value=ctx.author.mention, inline=False)
+                kick_logs.add_field(name="Reason", value=reason, inline=False)
                 await self.client.get_channel(MOD_LOGS).send(embed=kick_logs)
                 try:
                     await member.send(f"You were kicked from the PESU 2019 Batch server\n Reason: {reason}")
                 except:
-                    await ctx.send("that lawda fellow hasn't opened his dms only")
+                    await ctx.send("that fellow hasn't opened his dms only")
+                await ctx.guild.kick(member, reason=reason)
         else:
             await ctx.channel.send("Lawda, I am not dyno to let you do this")
 
@@ -520,14 +512,14 @@ class misc(commands.Cog):
     async def flush_slash(self, ctx):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             await ctx.channel.trigger_typing()
-            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
-            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
+            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
+            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confess', description='Submits an anonymous confession', options=[create_option(name="confession", description="Opinion or confession you want to post anonymously", option_type=3, required=True), create_option(name="msg_id", description="Message you want this confession to reply to", option_type=3, required=False)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
             await ctx.channel.send("Done")
             enabled = discord.Embed(title="Announcement from the mods", color=discord.Color.green(
             ), description="The confessions features has been enabled")
@@ -541,13 +533,19 @@ class misc(commands.Cog):
     async def disable_confess(self, ctx):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
             await ctx.channel.trigger_typing()
-            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
-            await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
-            await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
+            resp = await utils.manage_commands.get_all_commands(749484661717204992, TOKEN, guild_id=GUILD_ID)
+            slash_id = 0
+            for comms in resp:
+                if(comms['name'] == 'confess'):
+                    slash_id = comms['id']
+            await utils.manage_commands.remove_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_id=slash_id)
+            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
+            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
+            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
             await ctx.channel.send("Done")
             disabled = discord.Embed(title="Announcement from the mods", color=discord.Color.red(
             ), description="The confessions features has been disabled")

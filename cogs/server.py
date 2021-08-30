@@ -7,6 +7,7 @@ from discord.utils import get
 from datetime import datetime
 from selenium import webdriver
 from pathlib import Path
+from cogs.helpers import helpers
 
 GUILD_ID = 742797665301168220
 BOT_LOGS = 786084620944146504
@@ -91,7 +92,7 @@ class server(commands.Cog):
     async def on_member_remove(self, user):
         await self.client.get_channel(BOT_LOGS).send(f"{str(user)} just left.")
         await self.client.get_channel(BOT_LOGS).send(f"i.e., {str(user.mention)} just left")
-        if(self.getDeverified(str(user.id))):
+        if(helpers(self.client).getDeverified(str(user.id))):
             await self.client.get_channel(BOT_LOGS).send("Deverified the user")
 
 
