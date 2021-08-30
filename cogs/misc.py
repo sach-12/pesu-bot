@@ -537,7 +537,7 @@ class misc(commands.Cog):
             slash_id = 0
             for comms in resp:
                 if(comms['name'] == 'confess'):
-                    slash_id = comms['id']
+                    slash_id = int(comms['id'])
             await utils.manage_commands.remove_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_id=slash_id)
             # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
             # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
