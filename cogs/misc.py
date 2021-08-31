@@ -591,26 +591,26 @@ class misc(commands.Cog):
         ]
     )
     async def elective(self, ctx, subject):
-        await ctx.defer()
+        await ctx.defer(hidden=True)
         dest = self.client.get_channel(int(subject))
         perms = dest.permissions_for(ctx.author)
         if(perms.view_channel):
-            await ctx.send(f"You already had access to this channel. I will revoke the access now")
+            await ctx.send(f"You already had access to this channel. I will revoke the access now", hidden=True)
             await dest.set_permissions(ctx.author, overwrite=None)
             return
         # Junior or Non-verified check
         role_list = ctx.author.roles
         for role in role_list:
             if("Junior" in role.name):
-                await ctx.send("This feature is only for the 2019 batch")
+                await ctx.send("This feature is only for the 2019 batch", hidden=True)
                 return
             if("Just Joined" in role.name):
-                await ctx.send("You can choose your elective only after you verify yourself")
+                await ctx.send("You can choose your elective only after you verify yourself", hidden=True)
                 return
         overwrite = discord.PermissionOverwrite()
         overwrite.view_channel = True
         await dest.set_permissions(ctx.author, overwrite=overwrite)
-        await ctx.send(f"You now have access to {dest.mention}")
+        await ctx.send(f"You now have access to {dest.mention}", hidden=True)
 
     @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname", options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
     async def nickchange(self, ctx, member: discord.Member, new_name: str):
