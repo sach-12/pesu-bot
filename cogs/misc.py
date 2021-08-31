@@ -590,9 +590,9 @@ class misc(commands.Cog):
             )
         ]
     )
-    async def elective(self, ctx, SubjectName):
+    async def elective(self, ctx, subject):
         await ctx.defer()
-        dest = self.client.get_channel(int(SubjectName))
+        dest = self.client.get_channel(int(subject))
         perms = dest.permissions_for(ctx.author)
         if(perms.view_channel):
             await ctx.send(f"You already had access to this channel. I will revoke the access now")
