@@ -22,6 +22,7 @@ IST = pytz.timezone('Asia/Kolkata')
 GUILD_ID = 742797665301168220
 MOD_LOGS = 778678059879890944
 TOKEN = os.getenv('DISCORD_TOKEN')
+electiveChoiceList = []
 
 
 class misc(commands.Cog):
@@ -37,6 +38,34 @@ class misc(commands.Cog):
         self.kick = '`!kick`\n!kick {Member mention} {Reason: optional}\n\nKicks the member from the server'
         self.confessions = {}
         self.mutedict = {}
+        self.electivelist = {
+            "Data Analytics":"881934645468463134",
+            "Internet of Things":"881934940328046642",
+            "Applied Cryptography":"881935154136903750",
+            "Fundaments of Virtual and Augmented Reality":"881935380318933003",
+            "Human Computer Interaction":"881935678219382824",
+            "Big Data":"881095229434892288",
+            "Graph Theory Applications and Combinatorics":"881936295469908009",
+            "Bio Inspired Computing":"881936531651186758",
+            "Computer Network Security":"881937056027250798",
+            "Turbomachines":"879381767742689280",
+            "Vehicle Dynamics":"879382077680803880",
+            "Geometric Dimensioning and Tolerancing":"879382322120622100",
+            "Electric and Hybrid Vehicles":"879382758361817148",
+            "Composite Materials":"879382823226716211",
+            "Automotive Electronics":"879382929573310524",
+            "Advanced Digital Design":"879407858729517076",
+            "Digital Image Processing":"879408010810765352",
+            "Pattern Classification":"879408082818564096",
+            "Wireless Communictaion":"879408146429390869",
+            "Operations Research":"879408211587895346",
+            "Realtime Operating System":"879408339048615936",
+            "Synthesis and Timing Analysis of Digital Circuits":"879408520989147217",
+            "Artificial Neural Networks":"879408598915117106",
+            "Advanced Algorithms":"881095279821078529",
+            "Information Theory and Coding":"881957925978005564"
+        }
+        self.load_elective_choices()
         self.startTime = int(presentTime())
         self.flush_confessions.start()
         self.load_roles()
@@ -58,6 +87,12 @@ class misc(commands.Cog):
             self.muted = get(self.guildObj.roles, id=775981947079491614)
         except:
             pass
+    
+    def load_elective_choices(self):
+        global electiveChoiceList
+        electiveChoiceList = []
+        for ec in self.electivelist:
+            electiveChoiceList.append(create_choice(name=ec, value=self.electivelist[ec]))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -512,14 +547,7 @@ class misc(commands.Cog):
     async def flush_slash(self, ctx):
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             await ctx.channel.trigger_typing()
-            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
-            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
             await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confess', description='Submits an anonymous confession', options=[create_option(name="confession", description="Opinion or confession you want to post anonymously", option_type=3, required=True), create_option(name="msg_id", description="Message you want this confession to reply to", option_type=3, required=False)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
             await ctx.channel.send("Done")
             enabled = discord.Embed(title="Announcement from the mods", color=discord.Color.green(
             ), description="The confessions features has been enabled")
@@ -539,13 +567,6 @@ class misc(commands.Cog):
                 if(comms['name'] == 'confess'):
                     slash_id = int(comms['id'])
             await utils.manage_commands.remove_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_id=slash_id)
-            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=None)
-            # await utils.manage_commands.remove_all_commands(bot_id=749484661717204992, bot_token=TOKEN, guild_ids=[GUILD_ID])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='pride', description='Flourishes you with the pride of PESU', options=[create_option(name="msg_id", description="Message ID of any message you wanna reply to with the pride", option_type=3, required=False)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='nickchange', description='Change someone else\'s nickname', options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessban', description='Bans a user from submitting confessions who submitted a confession based on message ID', options=[create_option(name="msg_id", description="Message ID of the confession", option_type=3, required=True)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessbanuser', description="Bans a user from submitting confessions", options=[create_option(name="member", description="User/Member to ban", option_type=6, required=True)])
-            # await utils.manage_commands.add_slash_command(bot_id=749484661717204992, bot_token=TOKEN, guild_id=GUILD_ID, cmd_name='confessunbanuser', description="Unbans a user from submitting confessions", options=[create_option(name="member", description="User/Member to unban", option_type=6, required=True)])
             await ctx.channel.send("Done")
             disabled = discord.Embed(title="Announcement from the mods", color=discord.Color.red(
             ), description="The confessions features has been disabled")
@@ -555,6 +576,41 @@ class misc(commands.Cog):
             await self.client.get_channel(860224115633160203).set_permissions(ctx.guild.default_role, overwrite=overwrites)
         else:
             await ctx.channel.send("You are not authorised for this")
+
+
+    @cog_ext.cog_slash(name="elective",
+        description="Choose your elective",
+        options=[
+            create_option(
+                name="subject",
+                description="Choose from the options",
+                option_type=3,
+                required=True,
+                choices=electiveChoiceList
+            )
+        ]
+    )
+    async def elective(self, ctx, SubjectName):
+        await ctx.defer()
+        dest = self.client.get_channel(int(SubjectName))
+        perms = dest.permissions_for(ctx.author)
+        if(perms.view_channel):
+            await ctx.send(f"You already had access to this channel. I will revoke the access now")
+            await dest.set_permissions(ctx.author, overwrite=None)
+            return
+        # Junior or Non-verified check
+        role_list = ctx.author.roles
+        for role in role_list:
+            if("Junior" in role.name):
+                await ctx.send("This feature is only for the 2019 batch")
+                return
+            if("Just Joined" in role.name):
+                await ctx.send("You can choose your elective only after you verify yourself")
+                return
+        overwrite = discord.PermissionOverwrite()
+        overwrite.view_channel = True
+        await dest.set_permissions(ctx.author, overwrite=overwrite)
+        await ctx.send(f"You now have access to {dest.mention}")
 
     @ cog_ext.cog_slash(name="nickchange", description="Change someone else's nickname", options=[create_option(name="member", description="The member whose nickname you desire to change", option_type=6, required=True), create_option(name="new_name", description="The new name you want to give this fellow", option_type=3, required=True)])
     async def nickchange(self, ctx, member: discord.Member, new_name: str):
