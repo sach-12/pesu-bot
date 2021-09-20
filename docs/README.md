@@ -11,6 +11,11 @@
     
 </p>
 
+**IMPORTANT**
+Due to the discontinuance of the development of the discord.py library (Read here: https://gist.github.com/Rapptz/4a2f62751b9600a31a0d3c78100287f1), we will no longer be developing this bot. We will now work on migrating the entire bot to JS, i.e., using the discord.js library. There will be a new branch for it wherein you can help us contribute towards the migration.
+
+
+
 The source code for authentication and moderation bot used in "PESU 2019 Batch" discord server
 
 Download the required modules by using the following command:
