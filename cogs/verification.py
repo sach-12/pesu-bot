@@ -80,7 +80,7 @@ class verification(commands.Cog):
             return
 
         # checking if the user entered the PRN instead of the SRN
-        if (("PES12020" in SRN) or ("PES22020" in SRN) or ("PES12019" in SRN) or ("PES22019" in SRN)):
+        if (("PES12021" in SRN) or ("PES22021" in SRN) or ("PES12020" in SRN) or ("PES22020" in SRN) or ("PES12019" in SRN) or ("PES22019" in SRN)):
             veri.add_field(name="No SRN found", value="Enter SRN and not PRN as argument")
             await ctx.channel.send(f"{user.mention}", embed=veri)
             return
@@ -102,7 +102,7 @@ class verification(commands.Cog):
             await ctx.channel.send("`Note: There are a lot of discrepancies in the fresher's list of SRNs. If there's an issue, do ping @Bot Dev or @Admin`")
             return
         else: # when valid creds are returned from the batch list
-            if('PES12018' in SRN):
+            if('PES12018' in SRN):  # Cause '22 batch kids don't have PRN :cri:
                 await ctx.channel.send(f"{user.mention}, now enter your section to complete verification")
                 msg = await self.client.wait_for("message", check=lambda msg: msg.author == ctx.author)
                 msg = str(msg.content)
@@ -114,6 +114,7 @@ class verification(commands.Cog):
                     await ctx.channel.purge(limit=4)
                     return
                 await user.add_roles(self.senior)
+
             else:
                 await ctx.channel.send(f"{user.mention}, now enter PRN to complete verification")
                 msg = await self.client.wait_for("message", check=lambda msg: msg.author == ctx.author)
@@ -124,10 +125,12 @@ class verification(commands.Cog):
                     await ctx.channel.purge(limit=4)
                     return
 
-                if(dat[2] == 'Sem-3'):
+                if(dat[2] == 'Sem-5'):
                     role_str = (dat[-3].replace('Campus', '').replace(' ', '').replace('BIOTECHNOLOGY','BT'))
-                elif(dat[2] == 'Sem-1'):
+                elif(dat[2] == 'Sem-3'):
                     role_str = dat[-2] + '(Junior)'
+                elif(dat[2] == 'Sem-1'):
+                    role_str = dat[-2] + '(Kid)'
 
                 if(role_str not in [r.name for r in ctx.guild.roles]):
                     await ctx.channel.send(f"{user.mention} Looks like your role isn't on the server yet. DM or tag {self.admin.mention}")
