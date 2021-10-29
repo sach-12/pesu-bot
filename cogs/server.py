@@ -12,20 +12,20 @@ from cogs.helpers import helpers
 GUILD_ID = 742797665301168220
 BOT_LOGS = 786084620944146504
 MOD_LOGS = 778678059879890944
-ANNOUNCEMENTS = 749628212782563368
+# ANNOUNCEMENTS = 749628212782563368
 
-CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
-PESU_SRN=os.getenv('SRN')
-PESU_PWD=os.getenv('PASSWD')
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument('--ignore-ssl-errors=yes')
-chrome_options.add_argument('--ignore-certificate-errors')
-
-TODAY_ANNOUNCEMENTS_MADE = list()
-ALL_ANNOUNCEMENTS_MADE = list() 
+# CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
+# PESU_SRN=os.getenv('SRN')
+# PESU_PWD=os.getenv('PASSWD')
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument("--headless")
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument("--no-sandbox")
+# chrome_options.add_argument('--ignore-ssl-errors=yes')
+# chrome_options.add_argument('--ignore-certificate-errors')
+# 
+# TODAY_ANNOUNCEMENTS_MADE = list()
+# ALL_ANNOUNCEMENTS_MADE = list() 
 
 
 
@@ -36,7 +36,7 @@ class server(commands.Cog):
         self.veri = '`!v` or `!verify`\n!v help\n!v {SRN}'
         self.count = '`!c` or `!count`\n!c {Role name(don\'t mention it, type it out)}\n\nReturns the number of people with the speified role'
         self.ping = '`!ping` or `!Ping`\n\nReturns the bot\'s latency'
-        self.news = '`!news [optional]`\n\nPESU Academy Notifications\nUsage:\n`!news`: Gets the latest announcement\n`!news today`: Gets today\'s announcements\n`!news {N}`: Gets the last "N" announcements(where N is a number)\n`!news today {N}`: Gets last "N" announcements made today\n`!news all`: Gets all announcements(max: 10)'
+        # self.news = '`!news [optional]`\n\nPESU Academy Notifications\nUsage:\n`!news`: Gets the latest announcement\n`!news today`: Gets today\'s announcements\n`!news {N}`: Gets the last "N" announcements(where N is a number)\n`!news today {N}`: Gets last "N" announcements made today\n`!news all`: Gets all announcements(max: 10)'
         self.poll = '`!poll`\nStart a poll\n\nUsage: Type `!poll` to know more'
         self.info = '`!i` or `!info`\n!i {Member mention}\n!i {Member ID}\n\nReturns the information about a verified user on this server'
         self.deverify = '`!d` or `!deverify`\n!d {Member mention}\n\nDeverifies and removes the data of the user from the verified list'
@@ -185,7 +185,7 @@ class server(commands.Cog):
             return
         help_embed.add_field(name="Count", value=self.count)
         help_embed.add_field(name="Ping", value=self.ping)
-        help_embed.add_field(name="News", value=self.news)
+        # help_embed.add_field(name="News", value=self.news)
         help_embed.add_field(name="Poll", value=self.poll)
         if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
             help_embed.add_field(name="Info", value=self.info)
@@ -229,7 +229,7 @@ class server(commands.Cog):
         return ret
 
 
-    async def getPESUAnnouncements(self, chrome, username, password):
+    '''async def getPESUAnnouncements(self, chrome, username, password):
         chrome.get("https://pesuacademy.com/Academy")
         await asyncio.sleep(2)
 
@@ -451,7 +451,7 @@ class server(commands.Cog):
             try:
                 os.remove(fname)
             except FileNotFoundError:
-                pass
+                pass'''
 
 
 def setup(client):
