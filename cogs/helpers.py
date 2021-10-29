@@ -25,7 +25,8 @@ class helpers(commands.Cog):
             file = open('cogs/batch_list_2019.csv', 'r')
         elif ('PES1UG20' in a):
             file = open('cogs/batch_list_2020.csv', 'r')
-        elif ('PES1UG21' in a):
+        # elif ('PES1UG21' in a):
+        elif ('PES12021' in a):
             file = open('cogs/batch_list_2021.csv', 'r')
 
         for lin in file:

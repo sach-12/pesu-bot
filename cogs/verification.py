@@ -80,7 +80,7 @@ class verification(commands.Cog):
             return
 
         # checking if the user entered the PRN instead of the SRN
-        if (("PES12021" in SRN) or ("PES22021" in SRN) or ("PES12020" in SRN) or ("PES22020" in SRN) or ("PES12019" in SRN) or ("PES22019" in SRN)):
+        if (("PES12020" in SRN) or ("PES22020" in SRN) or ("PES12019" in SRN) or ("PES22019" in SRN)):
             veri.add_field(name="No SRN found", value="Enter SRN and not PRN as argument")
             await ctx.channel.send(f"{user.mention}", embed=veri)
             return
@@ -102,7 +102,7 @@ class verification(commands.Cog):
             await ctx.channel.send("`Note: There are a lot of discrepancies in the fresher's list of SRNs. If there's an issue, do ping @Bot Dev or @Admin`")
             return
         else: # when valid creds are returned from the batch list
-            if('PES12018' in SRN or 'PES1UG21' in SRN or 'PES2UG21' in SRN):  # Cause '22 batch kids don't have PRN :cri: and neither do 2025
+            if('PES12018' in SRN or 'PES12021' in SRN or 'PES22021' in SRN):  # Cause '22 batch kids don't have PRN :cri: and neither do 2025
                 await ctx.channel.send(f"{user.mention}, now enter your section to complete verification")
                 msg = await self.client.wait_for("message", check=lambda msg: msg.author == ctx.author)
                 msg = str(msg.content)
@@ -117,8 +117,10 @@ class verification(commands.Cog):
                 if dat[2] == 'Sem-1':
                     role_str = dat[-2] + '(Kid)'
                     try:
-                        await user.add_roles(role_str)
-                    except:
+                        role = get(user.guild.roles, name=role_str)
+                        await user.add_roles(role)
+                    except Exception as e:
+                        print(e)
                         await ctx.channel.send(f"{user.mention} Looks like your role isn't on the server yet. DM or tag {self.admin.mention}")
                         return
                 if dat[2] == 'Sem-7':
