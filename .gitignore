@@ -139,3 +139,4 @@ nohup.out
 
 bot/
 .vscode/
+clean.py
