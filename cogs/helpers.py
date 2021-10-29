@@ -19,14 +19,14 @@ class helpers(commands.Cog):
             return ['Done']
         f.close()
 
-        if ('PES12018' in a):
+        if ('PES12018' in a or 'PES22018' in a):
             file = open('cogs/batch_list_2018.csv', 'r')
-        elif ('PES1UG19' in a):
+        elif ('PES1UG19' in a or 'PES2UG19' in a):
             file = open('cogs/batch_list_2019.csv', 'r')
-        elif ('PES1UG20' in a):
+        elif ('PES1UG20' in a or 'PES2UG20' in a):
             file = open('cogs/batch_list_2020.csv', 'r')
         # elif ('PES1UG21' in a):
-        elif ('PES12021' in a):
+        elif ('PES12021' in a or 'PES22021' in a):
             file = open('cogs/batch_list_2021.csv', 'r')
 
         for lin in file:
