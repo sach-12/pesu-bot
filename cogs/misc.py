@@ -601,7 +601,7 @@ class misc(commands.Cog):
         # Junior or Non-verified check
         role_list = ctx.author.roles
         for role in role_list:
-            if("Junior" in role.name):
+            if("Junior" in role.name or "Kid" in role.name):
                 await ctx.send("This feature is only for the 2019 batch", hidden=True)
                 return
             if("Just Joined" in role.name):
