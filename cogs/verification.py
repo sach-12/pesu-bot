@@ -101,6 +101,12 @@ class verification(commands.Cog):
             await ctx.channel.send(f"{user.mention}", embed=fail)
             await ctx.channel.send("`Note: There are a lot of discrepancies in the fresher's list of SRNs. If there's an issue, do ping @Bot Dev or @Admin`")
             return
+        elif('no match' in dat):
+            fail.add_field(name="wrong SRN/PRN", value=f"{SRN} not matching the pattern")
+            await ctx.channel.send(f"{user.mention}", embed=fail)
+            await ctx.channel.send("`Note: The entered SRN/PRN isn't matching any set of values in our database. Do ping @Bot Dev or @Admin to let them know of the issue`")
+            return
+
         else: # when valid creds are returned from the batch list
             if('PES12018' in SRN or 'PES12021' in SRN or 'PES22021' in SRN):  # Cause '22 batch kids don't have PRN :cri: and neither do 2025
                 await ctx.channel.send(f"{user.mention}, now enter your section to complete verification")
