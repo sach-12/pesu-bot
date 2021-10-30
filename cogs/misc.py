@@ -528,6 +528,35 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda you can't execute this command")
 
+    @commands.command(aliases = ['bash'])
+    async def _script(self, ctx):
+        if ctx.author.id == 723377619420184668 or ctx.author.id == 718845827413442692:
+            await ctx.channel.send("Enter your command")
+            message = await self.client.wait_for('message', check=lambda m: m.author.id == ctx.author.id)
+            code = None
+            if message.content.startswith('```'):
+                code = message.content[3:-3]
+            else:
+                code = message.content
+            # all the bash command which can delete or modify file content
+            if 'rm' in code or 'sudo' in code or '>' in code:
+                await ctx.channel.send("This might overwrite the file contents, not gonna do")
+                return
+            if message.content == 'exit' or code == None:
+                await ctx.channel.send("Bye!")
+                return
+            p = subprocess.Popen(code, stdout=subprocess.PIPE, shell=True)
+            output = ""
+            for line in iter(p.stdout.readline, ''):
+                if not line:
+                    break
+                output += str(line, 'utf-8', 'ignore')
+            await ctx.channel.send(output)
+
+        else:
+            await ctx.channel.send("Lawda you can't execute this command")
+
+
     @commands.command(aliases=['restart'])
     async def _restart(self, ctx):
         BOT_TEST = 749473757843947671
