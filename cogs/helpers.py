@@ -9,28 +9,30 @@ class helpers(commands.Cog):
         self.client = client
 
 
-    def getuser(self, a=""):
-        if(a == ""):
+    def getuser(self, RegNo=""):
+        if(RegNo == ""):
             return['error']
         f = open('cogs/verified.csv', 'r')
         srn_list = [line.split(',')[3] for line in list(filter(None, f.read().split('\n')))]
-        if(a in srn_list):
+        if(RegNo in srn_list):
             f.close()
             return ['Done']
         f.close()
-
-        if ('PES12018' in a or 'PES22018' in a):
+        file = None
+        if ('PES12018' in RegNo or 'PES22018' in RegNo):
             file = open('cogs/batch_list_2018.csv', 'r')
-        elif ('PES1UG19' in a or 'PES2UG19' in a):
+        elif ('PES1UG19' in RegNo or 'PES2UG19' in RegNo):
             file = open('cogs/batch_list_2019.csv', 'r')
-        elif ('PES1UG20' in a or 'PES2UG20' in a):
+        elif ('PES1UG20' in RegNo or 'PES2UG20' in RegNo):
             file = open('cogs/batch_list_2020.csv', 'r')
         # elif ('PES1UG21' in a):
-        elif ('PES12021' in a or 'PES22021' in a):
+        elif ('PES12021' in RegNo or 'PES22021' in RegNo):
             file = open('cogs/batch_list_2021.csv', 'r')
 
+        if file == None:
+            return ['no match']
         for lin in file:
-            if(a in lin):
+            if(RegNo in lin):
                 f.close()
                 return lin.split(',')
         
@@ -38,13 +40,13 @@ class helpers(commands.Cog):
         return ['error']
 
 
-    def getDeverified(self, a=""):
+    def getDeverified(self, regNo=""):
         dat = ""
         ret = False
         file1 = open('cogs/verified.csv', 'r')
 
         for line in file1:
-            if(a not in line.split(',')):
+            if(regNo not in line.split(',')):
                 dat += line
             else:
                 ret = True
