@@ -94,25 +94,25 @@ class misc(commands.Cog):
         for ec in self.electivelist:
             electiveChoiceList.append(create_choice(name=ec, value=self.electivelist[ec]))
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if('chad' in message.content.lower().replace('‎', '').replace('chadwick', '')):
-            if((self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
-                pass
-            else:
-                # self.mute(ctx, message.author, '4h')
-                await message.channel.send(f"no telling chad {message.author.mention} <:tengue_fold:762662965387460629>")
-        pass
+    # @commands.Cog.listener()
+    # async def on_message(self, message):
+    #     if('chad' in message.content.lower().replace('‎', '').replace('chadwick', '')):
+    #         if((self.admin in message.author.roles) or (self.mods in message.author.roles) or (self.bots in message.author.roles)):
+    #             pass
+    #         else:
+    #             # self.mute(ctx, message.author, '4h')
+    #             await message.channel.send(f"no telling chad {message.author.mention} <:tengue_fold:762662965387460629>")
+    #     pass
 
-    @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        if(('chad' not in before.content.lower().replace('‎', '').replace('chadwick', '')) and ('chad' in after.content.lower().replace('‎', '').replace('chadwick', ''))):
-            if((self.admin in after.author.roles) or (self.mods in after.author.roles) or (self.bots in after.author.roles)):
-                pass
-            else:
-                await after.channel.send("nin amn you think you are smart huh")
-                await after.channel.send(f"no editing to chad either {after.author.mention} <:tengue_fold:762662965387460629>")
-        pass
+    # @commands.Cog.listener()
+    # async def on_message_edit(self, before, after):
+    #     if(('chad' not in before.content.lower().replace('‎', '').replace('chadwick', '')) and ('chad' in after.content.lower().replace('‎', '').replace('chadwick', ''))):
+    #         if((self.admin in after.author.roles) or (self.mods in after.author.roles) or (self.bots in after.author.roles)):
+    #             pass
+    #         else:
+    #             await after.channel.send("nin amn you think you are smart huh")
+    #             await after.channel.send(f"no editing to chad either {after.author.mention} <:tengue_fold:762662965387460629>")
+    #     pass
     
     @commands.command(aliases = ['uptime', 'ut'])
     async def _upTime(self, ctx):
