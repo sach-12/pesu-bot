@@ -121,7 +121,7 @@ class misc(commands.Cog):
         await ctx.send("Bot uptime: `{}`".format(str(timedelta(seconds = seconds))))
 
     @commands.command(aliases=['c', 'count'])
-    async def _count(self, ctx, *, roleName:str):
+    async def _count(self, ctx, *, roleName:str = ''):
         roleName = roleName.split('&')
         temp = []
         for i in roleName:
@@ -551,7 +551,10 @@ class misc(commands.Cog):
                 if not line:
                     break
                 output += str(line, 'utf-8', 'ignore')
-            await ctx.channel.send(output)
+            try:
+                await ctx.channel.send(output)
+            except:
+                await ctx.channel.send("Empty output")
 
         else:
             await ctx.channel.send("Lawda you can't execute this command")
