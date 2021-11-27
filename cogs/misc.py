@@ -210,6 +210,8 @@ class misc(commands.Cog):
 
                 if((seconds <= 0) or (seconds > 1209600)):
                     await ctx.channel.send(f"{ctx.author.mention}, please enter a valid amount of time", embed=mute_help_embed)
+                elif((mod.id == 749484661717204992) and (seconds <= 3600)):
+                    await ctx.channel.send(f"{ctx.author.mention}, self-mute is only for 1 hour or more")
                 else:
                     if(self.muted in member.roles):
                         await ctx.channel.send("Lawda he's already muted means how much more you'll do")
