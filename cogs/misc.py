@@ -191,14 +191,12 @@ class misc(commands.Cog):
         mute_help_embed = discord.Embed(
             title="Mute", color=0x48BF91, description=self.mute)
 
-        # if(ctx.author.mention == member.mention):
-        #     await ctx.send("Well......")
-        #     await sleep(0.5)
-        #     await ctx.send("No")
-        # else:
-        #     mod = ctx.author
+        if(ctx.author.mention == member.mention):
+            mod = self.client.get_user(749484661717204992)
+        else:
+            mod = ctx.author
 
-        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles)):
+        if((self.admin in ctx.author.roles) or (self.mods in ctx.author.roles) or (mod.id == 749484661717204992)):
             if(member != None):
                 seconds = 0
                 if(time.lower().endswith("d")):
@@ -230,7 +228,7 @@ class misc(commands.Cog):
                             await ctx.channel.send(embed=mute_embed)
                             mute_embed_logs = discord.Embed(
                                 title="Mute", color=0xff0000)
-                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {ctx.author.mention}"
+                            mute_details_logs = f"{member.mention}\t Time: {time}\n Reason: {reason}\n Moderator: {mod.mention}"
                             mute_embed_logs.add_field(
                                 name="Muted user", value=mute_details_logs)
                             await self.client.get_channel(MOD_LOGS).send(embed=mute_embed_logs)
