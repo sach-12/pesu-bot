@@ -99,7 +99,7 @@ class server(commands.Cog):
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if((self.budday not in before.roles) and (self.budday in after.roles)):
-            await self.client.get_channel(798472825589334036).send(f"Yo, it's {before.mention}'s birthday!")
+            await self.client.get_channel(860224115633160203).send(f"Yo, it's {before.mention}'s birthday!")
 
 
     @commands.Cog.listener()
