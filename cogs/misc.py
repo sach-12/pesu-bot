@@ -1,9 +1,7 @@
-import time
 from time import time as presentTime
 import datetime
 import discord
 from discord.ext import commands, tasks
-from discord.ext.commands.converter import CategoryChannelConverter
 from discord.utils import get
 import asyncio
 from discord_slash import cog_ext, utils
@@ -15,7 +13,7 @@ import numpy as np
 from discord_slash.utils.manage_commands import create_option, create_choice
 from datetime import datetime, timedelta
 import pytz
-from asyncio import sleep
+from clean import *
 IST = pytz.timezone('Asia/Kolkata')
 
 
@@ -562,6 +560,36 @@ class misc(commands.Cog):
         else:
             await ctx.channel.send("Lawda you can't execute this command")
 
+
+    @commands.command()
+    async def scrape(self, ctx, rr:int = 0, ec:int = 0):
+        if((self.admin in  ctx.author.roles) or (self.bot_devs in ctx.author.roles)):
+            if (rr == 0 or ec == 0):
+                await ctx.send("Provide args for range limiter")
+                return
+            await ctx.send("Beginning scrape job...")
+            scrape_job()
+            await ctx.send("Getting new csrf token and cookie set...")
+            cook, csrf_token = get_meta()
+            await ctx.send("Scraping begins...")
+            await ctx.send("RR Campus data being retrieved...")
+            rr_scrape(rr, cook, csrf_token)
+            await ctx.send("Finished RR Campus")
+            await ctx.send("EC Campus data being retrieved...")
+            ec_scrape(ec, cook, csrf_token)
+            await ctx.send("Finished EC Campus")
+            await ctx.send("The Most dangerous Scraping is done")
+            formatting()
+            await ctx.send("Finished formatting")
+            brs = br_func()
+            await ctx.send("Here is the branch list")
+            await ctx.send(brs)
+            await ctx.send("Replacing file...")
+            last()
+            await ctx.send("fin.")
+            await ctx.send(ctx.author.mention)
+        else:
+            await ctx.send("You are not authorised for this command")
 
     @commands.command(aliases=['restart'])
     async def _restart(self, ctx):
