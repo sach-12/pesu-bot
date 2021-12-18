@@ -550,10 +550,13 @@ class misc(commands.Cog):
             for line in iter(p.stdout.readline, ''):
                 if not line:
                     break
-                output += str(line, 'utf-8', 'ignore')
-            try:
-                await ctx.channel.send(output)
-            except:
+                out = str(line.rstrip(), 'utf-8', 'ignore')
+                output += str(line.rstrip(), 'utf-8', 'ignore')
+                try:
+                    await ctx.channel.send(out)
+                except:
+                    continue
+            if (output == ""):
                 await ctx.channel.send("Empty output")
 
         else:
