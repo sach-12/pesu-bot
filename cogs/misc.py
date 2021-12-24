@@ -127,8 +127,28 @@ class misc(commands.Cog):
         roleName = temp
         await ctx.channel.send(f"Got request for role {str(roleName)}")
         if(roleName == ['']):
+            await ctx.channel.trigger_typing()
             for guild in self.client.guilds:
-                await ctx.channel.send(f"We have {len(guild.members)} people here, wow!!")
+                total = len(guild.members)
+                verified_role = get(ctx.guild.roles, id = 749683320941445250)
+                verified = 0
+                hooman = 0
+                bots = 0
+                for mem in guild.members:
+                    if(verified_role in mem.roles):
+                        verified += 1
+                    perms = ctx.channel.permissions_for(mem)
+                    if(perms.view_channel):
+                        if(mem.bot):
+                            bots += 1
+                        else:
+                            hooman += 1
+                stats = f"**Server Stats:**\n\
+                    Total number of people on the server: `{total}`\n\
+                    Total number of verified people: `{verified}`\n\
+                    Number of people that can see this channel: `{hooman}`\n\
+                    Number of bots that can see this channel: `{bots}`"
+                await ctx.channel.send(stats)
         else:
             thisRole = []
             for roles in roleName:
@@ -143,7 +163,7 @@ class misc(commands.Cog):
                             boolean = False
                     if boolean:
                         count += 1
-            await ctx.channel.send(f"{str(count)} people has role {str(thisRole)}")
+            await ctx.channel.send(f"{str(count)} people has role {str(thisRole.name)}")
 
     @commands.command(aliases=['p', 'purge'])
     async def _clear(self, ctx, amt=0):
