@@ -13,7 +13,7 @@
 
 **IMPORTANT**:
 
-Due to the discontinuance of the development of the discord.py library (Read [here](https://gist.github.com/Rapptz/4a2f62751b9600a31a0d3c78100287f1)), we will no longer be developing this bot. We will now work on migrating the entire bot to JS, i.e., using the discord.js library. There will be a new [branch](https://github.com/sach-12/pesu-bot/tree/pesu.js) for it wherein you can help us contribute towards the migration.
+Due to the discontinuance of the development of the discord.py library (Read [here](https://gist.github.com/Rapptz/4a2f62751b9600a31a0d3c78100287f1)), we will no longer be developing this bot. We will now work on migrating the entire bot to JS, i.e., using the discord.js library. There will be a new [repository](https://github.com/sach-12/pesu-bot-js) for it wherein you can help us contribute towards the migration.
 
 
 
