@@ -163,7 +163,7 @@ class misc(commands.Cog):
                             boolean = False
                     if boolean:
                         count += 1
-            await ctx.channel.send(f"{str(count)} people has role {str(thisRole.name)}")
+            await ctx.channel.send(f"{str(count)} people has role {str(thisRole)}")
 
     @commands.command(aliases=['p', 'purge'])
     async def _clear(self, ctx, amt=0):
