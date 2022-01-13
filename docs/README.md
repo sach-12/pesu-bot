@@ -21,6 +21,7 @@ Due to the discontinuance of the development of the discord.py library (Read [he
 The PESU Python Bot is now offline forever. Migration to JavaScript is finished and this repository will now be read-only. The JS rewritten bot repository can be found [here](https://github.com/sach-12/pesu-bot-js)
 
 
+
 The source code for authentication and moderation bot used in "PESU 2019 Batch" discord server
 
 Download the required modules by using the following command:
