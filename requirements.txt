@@ -1,6 +1,0 @@
-python-dotenv==0.15.0
-discord==1.0.1
-discord.py==1.6.0
-asyncio==3.4.3
-selenium==3.141.0
-matplotlib==3.4.2

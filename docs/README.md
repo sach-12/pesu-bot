@@ -1,43 +1,43 @@
 # PESU Bot
 
 <p align="center">
-    <a href="https://github.com/sach-12/pesu-bot/issues" alt="issues">
-    <img alt="GitHub forks" src="https://img.shields.io/github/issues/sach-12/pesu-bot"></a>
+    <a href="https://github.com/sach-12/pesu-bot/issues">
+        <img alt="Issues" src="https://img.shields.io/github/issues/sach-12/pesu-bot">
+    </a>
     <a href="https://github.com/sach-12/pesu-bot/stargazers" alt="Stars">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/sach-12/pesu-bot"></a>
-    <img alt="Github license" src="https://img.shields.io/github/license/sach-12/pesu-bot"></a>
+        <img alt="Stars" src="https://img.shields.io/github/stars/sach-12/pesu-bot">
+    </a>
+    <a href="https://github.com/sach-12/pesu-bot/blob/main/LICENSE" alt="License">
+        <img alt="License" src="https://img.shields.io/github/license/sach-12/pesu-bot">
+    </a>
     <a href="https://github.com/sach-12/pesu-bot/contributors" alt="Contributors">
-    <img src="https://img.shields.io/github/contributors/sach-12/pesu-bot"/></a>
-    
+        <img alt="Contributors" src="https://img.shields.io/github/contributors/sach-12/pesu-bot"/>
+    </a>
 </p>
 
-**IMPORTANT**:
-
-Due to the discontinuance of the development of the discord.py library (Read [here](https://gist.github.com/Rapptz/4a2f62751b9600a31a0d3c78100287f1)), we will no longer be developing this bot. We will now work on migrating the entire bot to JS, i.e., using the discord.js library. There will be a new [repository](https://github.com/sach-12/pesu-bot-js) for it wherein you can help us contribute towards the migration.
-
-
-**UPDATE**:
-
-The PESU Python Bot is now offline forever. Migration to JavaScript is finished and this repository will now be read-only. The JS rewritten bot repository can be found [here](https://github.com/sach-12/pesu-bot-js)
-
-
-
-The source code for authentication and moderation bot used in "PESU 2019 Batch" discord server
+The source code for community management bot used in PESU Discord Server
 
 Download the required modules by using the following command:
 
-`pip3 install -r requirements.txt`
+```sh
+pip3 install -r requirements.txt
+```
+
+You will need a `.env` file with the following variables:
+
+```sh
+BOT_TOKEN="YOUR_BOT_TOKEN"
+MONGO_URI="YOUR_MONGO_URI"
+GUILD_ID="YOUR_GUILD_ID" (742797665301168220 for PESU Discord Server)
+BOT_PREFIX="YOUR_BOT_PREFIX"
+NODE_ENV="development"
+```
 
 If you wish to contribute to the bot, run these steps:
 
-1. Fork this repository
-
-2. Create a new branch called `beta-(discord-username)`
-
-3. Do whatever changes you wish to do and create a pull request with the following information furnished in the request message: `The cog you wish to change | What did you change`
-
-4. Send a review request to any of the following members: `Flab-E`, `sach-12`, `Mre11i0t` and/or `ArvindAROO`.
-
-5. Wait for approval for reviewers. Your PR may be directly accepted or requested for further changes.
+1. Create a new branch called `beta-(discord-username)`
+2. Do whatever changes you wish to do and create a pull request with the following information furnished in the request message: `The cog you wish to change | What did you change`
+3. Create a pull request to the **dev** branch.
+4. Wait for approval for reviewers. Your PR may be directly accepted or requested for further changes.
 
 **Under no circumstances is anyone allowed to merge to the main branch.**

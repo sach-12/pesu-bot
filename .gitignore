@@ -128,15 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# CSV files
-*.csv
-
-# Nohup.out
-nohup.out
-
-# PEM file
-*.pem
-
-bot/
 .vscode/
-clean.py
