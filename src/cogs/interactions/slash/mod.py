@@ -11,16 +11,20 @@ class SlashMod(commands.Cog):
 
     mod_group = app_commands.Group(name='mod', description='Moderation commands')
 
+    def check_admin_mod(self, user: discord.Member):
+        role_lst = [role.id for role in user.roles]
+        return int(self.client.config["admin"]) in role_lst or int(self.client.config["mod"]) in role_lst
+
     @mod_group.command(name='kick', description='Kick a user')
     @app_commands.describe(member="The user to kick", reason="The reason for kicking the user (optional)")
     async def kick(self, interaction: discord.Interaction, member: discord.Member, reason: str = None):
         await interaction.response.defer(thinking=True)
         # Check if the user is not an admin or mod
-        if not interaction.user.guild_permissions.administrator and not interaction.user.guild_permissions.kick_members:
+        if not self.check_admin_mod(interaction.user):
             await interaction.followup.send(content="Noob you can't do that", ephemeral=True)
             return
         # Check if the member is an admin or mod
-        if member.guild_permissions.administrator or member.guild_permissions.kick_members:
+        if self.check_admin_mod(member):
             await interaction.followup.send(content="Gomma you can't kick admin/mod", ephemeral=True)
             return
         # Check if the member is the bot
@@ -47,11 +51,11 @@ class SlashMod(commands.Cog):
                   delete_msg_duration: app_commands.Range[int, 0, 7] = 1):
         await interaction.response.defer(thinking=True)
         # Check if the user not an admin or mod
-        if not interaction.user.guild_permissions.administrator and not interaction.user.guild_permissions.ban_members:
+        if not self.check_admin_mod(interaction.user):
             await interaction.followup.send(content="Noob you can't do that", ephemeral=True)
             return
         # Check if the member is an admin or mod
-        if member.guild_permissions.administrator or member.guild_permissions.ban_members:
+        if self.check_admin_mod(member):
             await interaction.followup.send(content="Gomma you can't ban admin/mod", ephemeral=True)
             return
         # Check if the member is the bot
@@ -70,6 +74,20 @@ class SlashMod(commands.Cog):
                               colour=0xff0000, timestamp=datetime.utcnow())
         embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
         await interaction.followup.send(embed=embed)
+
+    @mod_group.command(name='untimeout', description='To remove a timeout a user')
+    async def timeout(self, interaction: discord.Interaction, member: discord.Member):
+        await interaction.response.defer(thinking=True)
+        # Check if the user not an admin or mod
+        if not self.check_admin_mod(interaction.user):
+            await interaction.followup.send(content="Noob you can't do that", ephemeral=True)
+            return
+        try:
+            await member.timeout(None)
+        except Exception as e:
+            await interaction.followup.send(f"Failed due to following error:\n`{e}`")
+            return
+        await interaction.followup.send(f"Successfully removed timeout for {member.mention}")
 
 
 async def setup(client: commands.Bot):
