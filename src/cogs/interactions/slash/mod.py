@@ -13,7 +13,8 @@ class SlashMod(commands.Cog):
 
     def check_admin_mod(self, user: discord.Member):
         role_lst = [role.id for role in user.roles]
-        return int(self.client.config["admin"]) in role_lst or int(self.client.config["mod"]) in role_lst
+        return (int(self.client.config["roles"]["admin"]) in role_lst or int(self.client.config["roles"]["mod"])
+                in role_lst)
 
     @mod_group.command(name='kick', description='Kick a user')
     @app_commands.describe(member="The user to kick", reason="The reason for kicking the user (optional)")
@@ -76,6 +77,7 @@ class SlashMod(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     @mod_group.command(name='untimeout', description='To remove a timeout a user')
+    @app_commands.describe(member="The user whose timeout is to be removed.")
     async def timeout(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(thinking=True)
         # Check if the user not an admin or mod

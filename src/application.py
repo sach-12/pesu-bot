@@ -20,6 +20,7 @@ client = commands.Bot(
 
 client.config = config
 
+
 @client.event
 async def on_ready():
     await client.wait_until_ready()
@@ -52,9 +53,9 @@ async def on_ready():
 async def reload(ctx):
     # Check if the user not an admin or mod or senior bot dev
     role_lst = [role.id for role in ctx.author.roles]
-    if not any(role in role_lst for role in [int(config["admin"]), int(config["mod"]),
-                                             int(config["senior_bot_developer"])]):
-        await ctx.send("Noob you can't do that")
+    if not any(role in role_lst for role in [int(config["roles"]["admin"]), int(config["roles"]["mod"]),
+                                             int(config["roles"]["senior_bot_developer"])]):
+        await ctx.reply("Noob you can't do that")
         return
     # Reload cogs
     for root, dirs, files in os.walk("cogs"):
@@ -64,20 +65,20 @@ async def reload(ctx):
                 cog = cog.replace("\\", ".")
                 await client.reload_extension(cog)
                 logger.info(f"Reloaded {cog}")
-    await ctx.send('Reloaded!')
+    await ctx.reply('Reloaded!')
 
 
 @client.command(name='sync', help='To sync all commands.')
 async def sync(ctx):
     # Check if the user not an admin or mod or senior bot dev
     role_lst = [role.id for role in ctx.author.roles]
-    if not any(role in role_lst for role in [int(config["admin"]), int(config["mod"]),
-                                             int(config["senior_bot_developer"])]):
-        await ctx.send("Noob you can't do that")
+    if not any(role in role_lst for role in [int(config["roles"]["admin"]), int(config["roles"]["mod"]),
+                                             int(config["roles"]["senior_bot_developer"])]):
+        await ctx.reply("Noob you can't do that")
         return
     # Sync commands
     await client.tree.sync(guild=discord.Object(id=os.getenv("GUILD_ID")))
     logger.info("Synced commands")
-    await ctx.send('Synced!')
+    await ctx.reply('Synced!')
 
 client.run(os.getenv("BOT_TOKEN"))
