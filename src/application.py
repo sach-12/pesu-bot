@@ -6,10 +6,15 @@ from discord import Intents
 from discord.ext import commands
 from discord.app_commands import CommandTree
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
-config = json.load(open(".\\cogs\\config.json"))
+p = Path(__file__).parent / "cogs" / "config.json"
+if not p.exists():
+    print("config.json not found")
+    exit(1)
+config = json.load(open(p))
 
 client = commands.Bot(
     command_prefix=os.getenv("BOT_PREFIX"),
@@ -32,8 +37,8 @@ async def on_ready():
     for root, dirs, files in os.walk("cogs"):
         for f in files:
             if f.endswith(".py"):
+                root = root.replace('/', '.').replace('\\', '.')
                 cog = f"{root}.{f[:-3]}"
-                cog = cog.replace("\\", ".")
                 await client.load_extension(cog)
                 logger.info(f"Loaded {cog}")
 
@@ -62,22 +67,22 @@ async def reload(ctx, cog="all"):
         for root, dirs, files in os.walk("cogs"):
             for f in files:
                 if f.endswith(".py"):
+                    root = root.replace('/', '.').replace('\\', '.')
                     cog = f"{root}.{f[:-3]}"
-                    cog = cog.replace("\\", ".")
                     await client.reload_extension(cog)
                     logger.info(f"Reloaded {cog}")
-        await ctx.reply('Reloaded!')
+        await ctx.reply("Reloaded!")
     else:
-        for root, dirs, files in os.walk("cogs"):
-            for f in files:
-                if f.endswith(".py") and f == cog+".py":
-                    cog = f"{root}.{f[:-3]}"
-                    cog = cog.replace("\\", ".")
-                    await client.reload_extension(cog)
-                    logger.info(f"Reloaded {cog}")
-                    await ctx.reply('Reloaded '+cog)
-                    return
-        await ctx.reply('Cog not found')
+        if cog.endswith('.py'):
+            cog = cog[:-3]
+        if not cog.startswith('cogs.'):
+            cog = "cogs." + cog
+        try:
+            await client.reload_extension(cog)
+            logger.info(f"Reloaded {cog}")
+            await ctx.reply("Reloaded " + cog)
+        except commands.ExtensionNotLoaded:
+            await ctx.reply("Cog not found")
 
 
 @client.command(name='sync', help='To sync all commands.')
