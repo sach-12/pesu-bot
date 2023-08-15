@@ -1,6 +1,5 @@
 import os
 import discord
-from datetime import datetime
 from discord import app_commands
 from discord.ext import commands
 
@@ -13,8 +12,7 @@ class SlashMod(commands.Cog):
 
     def check_admin_mod(self, user: discord.Member):
         role_lst = [role.id for role in user.roles]
-        return (int(self.client.config["roles"]["admin"]) in role_lst or int(self.client.config["roles"]["mod"])
-                in role_lst)
+        return self.client.config["roles"]["admin"] in role_lst or self.client.config["roles"]["mod"] in role_lst
 
     @mod_group.command(name='kick', description='Kick a user')
     @app_commands.describe(member="The user to kick", reason="The reason for kicking the user (optional)")
@@ -41,9 +39,15 @@ class SlashMod(commands.Cog):
         # Generate embed
         embed = discord.Embed(title=f"{mem_name} was kicked!",
                               description=f"\n**Reason**: {reason if reason else 'Reason not specified.'}",
-                              colour=0xff0000, timestamp=datetime.utcnow())
+                              colour=0xff0000, timestamp=discord.utils.utcnow())
         embed.set_image(url="https://media.giphy.com/media/3o85xxDEtOKC7dzlXa/giphy.gif")
         await interaction.followup.send(embed=embed)
+        # Writing to the logs thread
+        embed.description = (f"{interaction.user.mention} kicked {member.mention}."
+                             f"\n\n**Reason**: {reason if reason else 'Reason not specified.'}")
+        embed.set_footer(text=f"Kicked by {interaction.user.name}").set_image(url=None)
+        await self.client.get_guild(self.client.config['guild_id']).get_channel_or_thread(
+            self.client.config['threads']['kick_logs']).send(embed=embed)
 
     @mod_group.command(name='ban', description='Ban a user')
     @app_commands.describe(member='The user to be banned', reason='The reason for banning the user (optional)',
@@ -72,9 +76,15 @@ class SlashMod(commands.Cog):
         # Generate embed
         embed = discord.Embed(title=f"{mem_name} was banned!",
                               description=f"\n**Reason**: {reason if reason else 'Reason not specified.'}",
-                              colour=0xff0000, timestamp=datetime.utcnow())
+                              colour=0xff0000, timestamp=discord.utils.utcnow())
         embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
         await interaction.followup.send(embed=embed)
+        # Writing to the logs thread
+        embed.description = (f"{interaction.user.mention} banned {member.mention}."
+                             f"\n\n**Reason**: {reason if reason else 'Reason not specified.'}")
+        embed.set_footer(text=f"Banned by {interaction.user.name}").set_image(url=None)
+        await self.client.get_guild(self.client.config['guild_id']).get_channel_or_thread(
+            self.client.config['threads']['ban_logs']).send(embed=embed)
 
     @mod_group.command(name='untimeout', description='To remove a timeout a user')
     @app_commands.describe(member="The user whose timeout is to be removed.")
@@ -93,6 +103,4 @@ class SlashMod(commands.Cog):
 
 
 async def setup(client: commands.Bot):
-    await client.add_cog(
-        SlashMod(client), guild=discord.Object(id=os.getenv("GUILD_ID"))
-    )
+    await client.add_cog(SlashMod(client), guild=discord.Object(id=client.config['guild_id']))

@@ -17,6 +17,4 @@ class SlashGeneral(commands.Cog):
 
 
 async def setup(client: commands.Bot):
-    await client.add_cog(
-        SlashGeneral(client), guild=discord.Object(id=os.getenv("GUILD_ID"))
-    )
+    await client.add_cog(SlashGeneral(client), guild=discord.Object(id=client.config['guild_id']))

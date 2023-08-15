@@ -50,34 +50,46 @@ async def on_ready():
 
 
 @client.command(name='reload', help='To reload all cogs.')
-async def reload(ctx):
+async def reload(ctx, cog="all"):
     # Check if the user not an admin or mod or senior bot dev
     role_lst = [role.id for role in ctx.author.roles]
-    if not any(role in role_lst for role in [int(config["roles"]["admin"]), int(config["roles"]["mod"]),
-                                             int(config["roles"]["senior_bot_developer"])]):
+    if not any(role in role_lst for role in [config["roles"]["admin"], config["roles"]["mod"],
+                                             config["roles"]["senior_bot_developer"]]):
         await ctx.reply("Noob you can't do that")
         return
     # Reload cogs
-    for root, dirs, files in os.walk("cogs"):
-        for f in files:
-            if f.endswith(".py"):
-                cog = f"{root}.{f[:-3]}"
-                cog = cog.replace("\\", ".")
-                await client.reload_extension(cog)
-                logger.info(f"Reloaded {cog}")
-    await ctx.reply('Reloaded!')
+    if cog == "all":
+        for root, dirs, files in os.walk("cogs"):
+            for f in files:
+                if f.endswith(".py"):
+                    cog = f"{root}.{f[:-3]}"
+                    cog = cog.replace("\\", ".")
+                    await client.reload_extension(cog)
+                    logger.info(f"Reloaded {cog}")
+        await ctx.reply('Reloaded!')
+    else:
+        for root, dirs, files in os.walk("cogs"):
+            for f in files:
+                if f.endswith(".py") and f == cog+".py":
+                    cog = f"{root}.{f[:-3]}"
+                    cog = cog.replace("\\", ".")
+                    await client.reload_extension(cog)
+                    logger.info(f"Reloaded {cog}")
+                    await ctx.reply('Reloaded '+cog)
+                    return
+        await ctx.reply('Cog not found')
 
 
 @client.command(name='sync', help='To sync all commands.')
 async def sync(ctx):
     # Check if the user not an admin or mod or senior bot dev
     role_lst = [role.id for role in ctx.author.roles]
-    if not any(role in role_lst for role in [int(config["roles"]["admin"]), int(config["roles"]["mod"]),
-                                             int(config["roles"]["senior_bot_developer"])]):
+    if not any(role in role_lst for role in [config["roles"]["admin"], config["roles"]["mod"],
+                                             config["roles"]["senior_bot_developer"]]):
         await ctx.reply("Noob you can't do that")
         return
     # Sync commands
-    await client.tree.sync(guild=discord.Object(id=os.getenv("GUILD_ID")))
+    await client.tree.sync(guild=discord.Object(id=client.config['guild_id']))
     logger.info("Synced commands")
     await ctx.reply('Synced!')
 
